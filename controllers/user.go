@@ -23,7 +23,12 @@ func DeleteUserById(context *gin.Context) {
 	}
 
 	//----> Retrieve the pizza with the given id from database.
-	user.DeleteUserById(uint(id))
+	err := user.DeleteUserById(uint(id))
+
+	//----> Check if the user exist.
+	if err != nil{
+		context.JSON(http.StatusNotFound, gin.H{"message": "This user cannot be deleted!"})
+	}
 
 	//----> Send back the response
 	context.JSON(http.StatusOK, gin.H{"message": "User is deleted successfully!"})
@@ -61,8 +66,13 @@ func GetUserById(context *gin.Context) {
 	}
 
 	//----> Get the user with the given id from database.
-	user.GetUserById(uint(id))
+	user, err := user.GetUserById(uint(id))
+
+	//----> Check if the user exist.
+	if err != nil{
+		context.JSON(http.StatusNotFound, gin.H{"message": "The user is not available in the database!"})
+	}
 
 	//----> Send back the response
-	context.JSON(http.StatusOK, gin.H{"message": "The user is retrieved successfully!"})
+	context.JSON(http.StatusOK, gin.H{"message": "The user is retrieved successfully!", "user": user})
 }

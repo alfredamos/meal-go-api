@@ -166,15 +166,15 @@ func (editProfileModel *EditProfileModel) EditProfile() error {
 }
 
 type SignupModel struct {
-	Name string
-	Email    string
-	Phone string
-	Gender Gender
-	Password string
-	ConfirmPassword string
-	Role Role
-	Image string
-	Address string
+	Name string `json:"name" binding:"required"`
+	Email string `json:"email" binding:"required"`
+	Phone string `json:"phone" binding:"required"`
+	Gender Gender `json:"gender" binding:"required"`
+	Password string `json:"password" binding:"required"`
+	ConfirmPassword string `json:"confirmPassword" binding:"required"`
+	Role Role `json:"role"`
+	Image string `json:"image" binding:"required"`
+	Address string `json:"address" binding:"required"`
 }
 
 func (signup *SignupModel) Signup() error{

@@ -54,6 +54,6 @@ func RegisteredRoutes(server *gin.Engine){
 	p.PATCH("/pizzas/:id", controllers.EditPizzaById)
 	//----> User routes.
 	p.GET("/users", controllers.GetAllUsers)
-	p.GET("/users/:id", controllers.GetPizzaById)
+	p.GET("/users/:id", controllers.GetUserById)
 	p.DELETE("/users/:id", controllers.DeleteUserById)
 }
