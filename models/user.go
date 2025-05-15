@@ -2,10 +2,26 @@ package models
 
 import (
 	"errors"
+
 	"github.com/alfredamos/go-meal-api/initializers"
 	"gorm.io/gorm"
 	//"gorm.io/gorm"
 )
+
+func UserGetById(id uint) (User, error){
+	var user User 
+	//----> User variable.
+	//----> Retrieve the user with the given id from the database.
+	result := initializers.DB.First(&user, id)
+	
+	//----> Check for non existent user.
+	if result.RowsAffected == 0 {
+		return User{}, errors.New("there is no user with the given id to retrieve from database")
+	}
+	
+	//----> Send back the response.
+   return user, nil
+}
 
 type User struct {
 	gorm.Model
@@ -38,32 +54,30 @@ func (user *User) GetAllUsers() ([]User, error) {
    return users, nil    
 }
 
-func (*User)GetUserById(id uint) (User, error) {
-	var user User //----> User variable.
-	//----> Retrieve the user with the given id from the database.
-	result := initializers.DB.First(&user, id)
-	
-	//----> Check for non existent user.
-	if result.RowsAffected == 0 {
-		return User{}, errors.New("there is no user with the given id to retrieve from database")
+func (*User) GetUserById(id uint) (User, error) {
+	//----> Get user with the given id.
+	user, err := UserGetById(id)
+
+	//----> Check for error.
+	if err != nil {
+		return User{}, errors.New("pizza cannot be retrieved")
 	}
-	
+
 	//----> Send back the response.
-   return user, nil
+	 return user, nil
 }
 
-func (*User)DeleteUserById(id uint) error{
-	var user User //----> User variable.
-	//----> Retrieve the user with the given id from the database.
-	result := initializers.DB.First(&user, id)
-	
-	//----> Check for non existent user.
-	if result.RowsAffected == 0 {
-		return errors.New("there is no user with the given id to retrieve from database")
+func (*User) DeleteUserById(id uint) error{
+	//----> Get user with the given id.
+	_, err := UserGetById(id)
+
+	//----> Check for error.
+	if err != nil {
+		return errors.New("pizza cannot be retrieved")
 	}
 
 	//----> Delete the user.
-	result = initializers.DB.Unscoped().Delete(&User{}, id)
+	result := initializers.DB.Unscoped().Delete(&User{}, id)
 
 	//----> Check for error.
 	if result.RowsAffected == 0 {
