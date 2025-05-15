@@ -14,7 +14,7 @@ func RolePermission(roles []string) gin.HandlerFunc{
 		
 		//----> Check for existence of role.
 		if !exists {
-			c.AbortWithStatus(http.StatusForbidden)
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"status": "fail","message": "You are not permitted to access this page or perform this function!", "statusCode": http.StatusForbidden})
 			return
 		}
 
@@ -27,7 +27,7 @@ func RolePermission(roles []string) gin.HandlerFunc{
 		//----> Check for valid role.
 		if  !result {
 			//----> Invalid role.
-			c.AbortWithStatus(http.StatusForbidden)
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"status": "fail","message": "You are not permitted to access this page or perform this function!", "statusCode": http.StatusForbidden})
 			return
 		}else if result{
 			//----> Valid role.

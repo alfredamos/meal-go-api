@@ -130,7 +130,7 @@ type EditProfileModel struct {
 	Role Role  `json:"role"`
 }
 
-func (editProfileModel *EditProfileModel) EditProfile() (User, error) {
+func (editProfileModel *EditProfileModel) EditProfile() error {
 	//----> Declare the user variable.
 	var user User
 
@@ -140,7 +140,7 @@ func (editProfileModel *EditProfileModel) EditProfile() (User, error) {
 
 	//----> Record does not exist.
 	if result.RowsAffected == 0{		
-		return User{}, errors.New("invalid credentials")
+		return errors.New("invalid credentials")
 	}
 
 	//----> Check for password validity.
@@ -149,22 +149,20 @@ func (editProfileModel *EditProfileModel) EditProfile() (User, error) {
 	
 	//----> Check validity of password.
 	if isValidPassword != nil{
-		return User{}, errors.New("invalid credential")
+		return errors.New("invalid credential")
 	} 
 
 	//----> Update the user profile.
-	user = User{
-		Name:editProfileModel.Name,
-		Address: editProfileModel.Address,
-		Image:  editProfileModel.Image,
-		Gender: editProfileModel.Gender,
-		Phone: editProfileModel.Phone,
-	}
-	
+	user.Name =editProfileModel.Name
+	user.Address = editProfileModel.Address
+	user.Image =  editProfileModel.Image
+	user.Gender = editProfileModel.Gender
+	user.Phone = editProfileModel.Phone
+
 	//----> Save the change in database.
 	initializers.DB.Model(&user).Updates(&user)
 
-	return user, nil
+	return nil
 }
 
 type SignupModel struct {

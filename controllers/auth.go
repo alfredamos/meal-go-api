@@ -50,7 +50,7 @@ func EditProfileController(context *gin.Context){
 	}
 
 	//----> Save the changed profiles into the database.
-	user, err := editProfileModel.EditProfile()
+	err = editProfileModel.EditProfile()
 	fmt.Println("At point 2, error : ", err)
 	//----> Check for error.
 	if err != nil {
@@ -59,7 +59,7 @@ func EditProfileController(context *gin.Context){
 	}
 
 	//----> Send back the response
-	context.JSON(http.StatusOK, gin.H{"message": "Profile has been changed successfully!", "user": user})
+	context.JSON(http.StatusOK, gin.H{"message": "Profile has been changed successfully!"})
 }
 
 

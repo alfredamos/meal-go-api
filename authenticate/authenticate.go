@@ -2,7 +2,6 @@ package authenticate
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -19,66 +18,52 @@ func GenerateToken(name string, email string, userId uint, role string) (string,
 }
 
 func VerifyToken(c *gin.Context){
-	fmt.Println("I am about to get the token")
 	//----> Get the token from cookie.
 	token, err := GetTokenFromCookie(c)
 
-	fmt.Println("token : ", token, ", err : ", err)
-	fmt.Println("I just got the token")
-
 	//----> Check for error.
 	if err != nil{
-		c.AbortWithStatus(http.StatusUnauthorized)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail","message": "Invalid credential!", "statusCode": http.StatusUnauthorized})
 		return 
 	}
 
-	fmt.Println("I got pass the first obstacle")
 	//----> Check for valid token
 	parsedToken, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error){
 		_, ok := token.Method.(*jwt.SigningMethodHMAC)
 		if !ok {
 			return nil, errors.New("unexpected signing method")
 		}
-		// Return the secret key for signing
+
+		//----> Return the secret key for signing
     return []byte(secretKey), nil
 	})
 
-	fmt.Println("parsedToken : ", parsedToken, ", err : ", err)
-	fmt.Println("I got pass the second obstacle")
-	
 	if err != nil {
-		c.AbortWithStatus(http.StatusUnauthorized)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail","message": "Invalid credential!", "statusCode": http.StatusUnauthorized})
 		return 
 	}
-
-	fmt.Println("I got pass the third obstacle")
 
 	isValidToken := parsedToken.Valid
 
 	if !isValidToken {
-		c.AbortWithStatus(http.StatusUnauthorized)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail","message": "Invalid credential!", "statusCode": http.StatusUnauthorized})
 		return 
 	}
 
-	fmt.Println("I got pass the fourth obstacle")
-
 	if claims, ok := parsedToken.Claims.(jwt.MapClaims); ok && parsedToken.Valid {
-		// Access claims
-		fmt.Println("I'm in authentication")
-		//userID := claims["userID"].(uint)
+		//----> Access claims
 		name := claims["name"].(string)
 		email := claims["email"].(string)
 		role := claims["role"].(string)
-		//c.Set("userID", userID)
+
+		//----> Set the claims on gin context
 		c.Set("name", name)
 		c.Set("email", email)
 		c.Set("role", role)
-		fmt.Println("I'm about to get out of authentication")
 		c.Next()
 	} else {
-		fmt.Println("This is the final obstacle")
-		c.AbortWithStatus(http.StatusUnauthorized)
-		return
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail","message": "Invalid credential!", "statusCode": http.StatusUnauthorized})
+		return 
 	}
 
 }
