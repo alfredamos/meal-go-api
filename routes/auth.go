@@ -13,12 +13,13 @@ func RegisterAuthRoutes(server *gin.Engine){
 	server.POST("/auth/signup", controllers.SignupController)
 	server.POST("/auth/login",controllers.LoginController)
 	
-	//----> Protected routes.
 	//----> Apply middleware to routes
 	r := server.Use(authenticate.VerifyToken)
 	
+	//----> Protected routes.
 	r.PATCH("/auth/change-password", controllers.ChangePasswordController)
 	r.PATCH("/auth/edit-profile", controllers.EditProfileController)
 	r.POST("/auth/logout",controllers.LogoutController)
-	
+
+	//----> Roles permitted routes
 }

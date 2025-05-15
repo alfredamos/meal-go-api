@@ -1,8 +1,10 @@
 package models
 
 import (
+	"errors"
 	"fmt"
 
+	"github.com/alfredamos/go-meal-api/initializers"
 	"gorm.io/gorm"
 	//"gorm.io/gorm"
 )
@@ -22,8 +24,22 @@ type User struct {
 
 }
 
-func (*User) GetAllUsers() {
-	fmt.Println("Get all Users ")
+func (user *User) GetAllUsers() ([]User, error) {
+	//----> Declare slice of users.
+	var users []User
+	
+	//----> Retrieve the users from the database.
+	result := initializers.DB.Find(&users)
+	
+	fmt.Println("error : ", result.Error)
+	fmt.Println("rowAffected : ", result.RowsAffected)
+	//----> Check for empty slice of user.
+	if result.RowsAffected == 0 {
+		return []User{}, errors.New("there are no users to retrieve from database")
+	}
+	 fmt.Println("users : ", users)
+	//----> Send back the response.
+   return users, nil    
 }
 
 func (*User)GetUserById(id uint) {

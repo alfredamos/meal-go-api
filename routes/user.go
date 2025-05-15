@@ -11,10 +11,10 @@ func RegisterUserRoutes(server *gin.Engine) {
 	list := make([]string, 0)
 	list = append(list, "Admin")
 	//list = append(list, "Customer")
-	r := server.Use(authenticate.VerifyToken, authenticate.RolePermission(list))
+	p := server.Use(authenticate.VerifyToken, authenticate.RolePermission(list))
 
 	//----> Protected routes.
-	r.GET("/users", controllers.GetAllUsers)
-	r.GET("/users/:id", controllers.GetPizzaById)
-	r.DELETE("/users/:id", controllers.DeleteUserById)
+	p.GET("/users", controllers.GetAllUsers)
+	p.GET("/users/:id", controllers.GetPizzaById)
+	p.DELETE("/users/:id", controllers.DeleteUserById)
 }

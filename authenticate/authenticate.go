@@ -2,6 +2,7 @@ package authenticate
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -60,6 +61,7 @@ func VerifyToken(c *gin.Context){
 		c.Set("name", name)
 		c.Set("email", email)
 		c.Set("role", role)
+		fmt.Println("I'm authenticated!")
 		c.Next()
 	} else {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail","message": "Invalid credential!", "statusCode": http.StatusUnauthorized})

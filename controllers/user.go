@@ -35,10 +35,15 @@ func GetAllUsers(context *gin.Context) {
 	var user models.User
 
 	//----> Retrieve the users from the database.
-	user.GetAllUsers()
+	users, err := user.GetAllUsers()
+	
+	//----> Check for error.
+	if err != nil {
+		context.JSON(http.StatusNotFound, gin.H{"status": "failed", "message": "There are no users in the database!", "statusCode": http.StatusNotFound})
+	}
 
 	//----> Send back the response.
-	context.JSON(http.StatusOK, gin.H{"message": "Users are retrieve successfully!"})
+	context.JSON(http.StatusOK, gin.H{"message": "Users are retrieve successfully!", "users": users})
 }
 
 func GetUserById(context *gin.Context) {

@@ -3,6 +3,7 @@ package authenticate
 import (
 	"fmt"
 	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm/utils"
 )
@@ -31,6 +32,7 @@ func RolePermission(roles []string) gin.HandlerFunc{
 			return
 		}else if result{
 			//----> Valid role.
+			fmt.Println("I'm authorized")
 			c.Next()
 		}
 	}

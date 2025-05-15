@@ -17,7 +17,7 @@ func main(){
 	server := gin.Default()
 
 	//---->Get the end-points
-	routes.RegisterAllRoutes(server)
+	routes.RegisteredRoutes(server)
 
 	server.Run()
 }
