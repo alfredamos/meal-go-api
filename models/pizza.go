@@ -6,15 +6,15 @@ import (
 	"gorm.io/gorm"
 )
 
-func PizzaGetById(id uint) (Pizza, error){
-	var pizza Pizza 
-	//----> Pizza variable.
+func pizzaGetById(id uint) (Pizza, error){
+	var pizza Pizza //----> Pizza variable.
+	
 	//----> Retrieve the pizza with the given id from the database.
 	result := initializers.DB.First(&pizza, id)
 	
 	//----> Check for non existent pizza.
 	if result.RowsAffected == 0 {
-		return Pizza{}, errors.New("there is no pizza with the given id to retrieve from database")
+		return Pizza{}, errors.New("the pizza with the given id is not found")
 	}
 	
 	//----> Send back the response.
@@ -44,13 +44,12 @@ func (pizza *Pizza) CreatePizza() error{
 	}
 
 	//----> Send back the response.
-
 	return nil
 }
 
 func (*Pizza) DeletePizzaById(id uint) error{
 	//----> Get the pizza with the given id
-	_, err := PizzaGetById(id)
+	_, err := pizzaGetById(id)
 
 	//----> Check for error.
 	if err != nil {
@@ -72,23 +71,22 @@ func (*Pizza) DeletePizzaById(id uint) error{
 
 func (pizza *Pizza) EditPizzaId(id uint) error{
 	//----> Get the pizza with the given id
-	_ , err := PizzaGetById(id)
+	_ , err := pizzaGetById(id)
 
 	//----> Check for error.
 	if err != nil {
 		return errors.New("pizza cannot be retrieved")
 	}
 
-	//----> Update and save the change in database.
+	//----> Update the cart-item in the database.
 	result := initializers.DB.Model(&pizza).Updates(&pizza)
 
-	//----> Check the error.
+	//----> Check for error.
 	if result.RowsAffected == 0 {
-		return errors.New("pizza with given id not updated")
+		return errors.New("pizza cannot be updated")
 	}
 
 	//----> send back the response.
-
 	return nil
 }
 
@@ -98,7 +96,7 @@ func (*Pizza) GetAllPizzas() ([]Pizza, error){
 	//----> Retrieve pizzas from database.
 	result := initializers.DB.Find(&pizzas)
 
-	//----> Check for empty slice of user.
+	//----> Check for error.
 	if result.RowsAffected == 0 {
 		return []Pizza{}, errors.New("there are no pizzas to retrieve from database")
 	}
@@ -109,7 +107,7 @@ func (*Pizza) GetAllPizzas() ([]Pizza, error){
 
 func (*Pizza) GetPizzaById(id uint) (Pizza, error){
 	//----> Get the pizza with the given id
-	pizza, err := PizzaGetById(id)
+	pizza, err := pizzaGetById(id)
 
 	//----> Check for error.
 	if err != nil {
@@ -117,6 +115,5 @@ func (*Pizza) GetPizzaById(id uint) (Pizza, error){
 	}
 
 	//----> Send back the response.
-
 	return pizza, nil
 }
