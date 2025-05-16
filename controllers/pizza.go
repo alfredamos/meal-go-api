@@ -56,7 +56,6 @@ func DeletePizzaById(context *gin.Context) {
 	context.JSON(http.StatusNotFound, gin.H{"message": "Pizza cannot be deleted!"})
  }
 
-
  //----> Send back the response
  context.JSON(http.StatusOK, gin.H{"message": "Pizza has been deleted successfully!"})
 

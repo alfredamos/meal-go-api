@@ -10,7 +10,7 @@ func pizzaGetById(id uint) (Pizza, error){
 	var pizza Pizza //----> Pizza variable.
 	
 	//----> Retrieve the pizza with the given id from the database.
-	result := initializers.DB.First(&pizza, id)
+	result := initializers.DB.Joins("User").First(&pizza, id)
 	
 	//----> Check for non existent pizza.
 	if result.RowsAffected == 0 {

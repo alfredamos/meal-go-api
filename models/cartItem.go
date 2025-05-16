@@ -10,7 +10,7 @@ func cartItemGetById(id uint) (CartItem, error){
 	var cartItem CartItem //----> Declaration.
 
 	//----> Retrieve the cart-item with given id from database.
-	result := initializers.DB.First(&cartItem, id)
+	result := initializers.DB.Joins("Pizza").Joins("Order").First(&cartItem, id)
 
 	//----> Check for error.
 	if result.RowsAffected == 0 {

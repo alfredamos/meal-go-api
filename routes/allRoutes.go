@@ -28,6 +28,13 @@ func RegisteredRoutes(server *gin.Engine){
 	r.PATCH("/auth/edit-profile", controllers.EditProfileController)
 	r.POST("/auth/logout",controllers.LogoutController)
 	
+	//----> Cart-item routes.
+	r.GET("/cart-items", controllers.GetAllCartItems)
+	r.POST("/cart-items", controllers.CreateCartItem)
+	r.DELETE("/cart-items/:id", controllers.DeleteCartItemById)
+	r.GET("/cart-items/:id", controllers.GetCartItemById)
+	r.PATCH("/cart-items/:id", controllers.EditCartItemById)
+
 	//----> Order routes.
 	r.GET("/orders/orders-by-user-id/:userId", controllers.GetAllOrderByUserId)
 	r.DELETE("/orders/delete-all-orders-by-user-id/:userId", controllers.DeleteOrderByUserId)
