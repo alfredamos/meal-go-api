@@ -12,7 +12,7 @@ func UserGetById(id uint) (User, error){
 	var user User 
 	//----> User variable.
 	//----> Retrieve the user with the given id from the database.
-	result := initializers.DB.First(&user, id)
+	result := initializers.DB.Omit("Password").First(&user, id)
 	
 	//----> Check for non existent user.
 	if result.RowsAffected == 0 {
@@ -25,14 +25,14 @@ func UserGetById(id uint) (User, error){
 
 type User struct {
 	gorm.Model
-	Name     string
-	Email    string `gorm:"unique"`
-	Phone    string
-	Image    string
-	Gender   Gender
-	Password string
-	Role     Role
-	Address  string
+	Name     string `json:"name" binding:"required"`
+	Email    string `gorm:"unique" json:"email" binding:"required"`
+	Phone    string `json:"phone" binding:"required"`
+	Image    string `json:"image" binding:"required"`
+	Gender   Gender `json:"gender" binding:"required"`
+	Password string `json:"password" binding:"required"`
+	Role     Role `json:"role"`
+	Address  string `json:"address" binding:"required"`
 	Orders []Order `gorm:"foreignKey:UserID"`
 	Pizzas []Pizza `gorm:"foreignKey:UserID"`
 
@@ -43,7 +43,7 @@ func (user *User) GetAllUsers() ([]User, error) {
 	var users []User
 	
 	//----> Retrieve the users from the database.
-	result := initializers.DB.Find(&users)
+	result := initializers.DB.Omit("Password").Find(&users)
 	
 	//----> Check for empty slice of user.
 	if result.RowsAffected == 0 {

@@ -2,21 +2,18 @@ package models
 
 import (
 	"errors"
-	"fmt"
-
 	"github.com/alfredamos/go-meal-api/authenticate"
 	"github.com/alfredamos/go-meal-api/initializers"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type LoginModel struct {
-	Email    string
-	Password string
+	Email    string `json:"email" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }
 
 func (loginModel *LoginModel) Login() (string, error) {
 	var user User //----> Declare user variable.
-	fmt.Println("loginModel : ", loginModel)
 	
 	//----> Check if the user email is attached to a genuine user.
 	email := loginModel.Email
@@ -67,7 +64,6 @@ func (changePasswordModel *ChangePasswordModel) ChangePassword() error {
 	isMatchPassword := newPassword == confirmPassword
 
 	if !isMatchPassword{
-		fmt.Println("password must match")
 		return errors.New("passwords must match")
 	}
 
@@ -181,10 +177,9 @@ func (signup *SignupModel) Signup() error{
 	var user User
 	//----> Check the matches of password and confirmPassword.
 	isMatchPassword := signup.Password == signup.ConfirmPassword
-	fmt.Println("IsMatchPassword : ", isMatchPassword)
+	
 	//----> Check for error
 	if !isMatchPassword{
-		fmt.Println("password must match")
 		return errors.New("passwords must match")
 	}
 	

@@ -32,7 +32,6 @@ func RolePermission(roles []string) gin.HandlerFunc{
 			return
 		}else if result{
 			//----> Valid role.
-			fmt.Println("I'm authorized")
 			c.Next()
 		}
 	}

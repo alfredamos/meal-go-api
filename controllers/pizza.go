@@ -27,6 +27,7 @@ func CreatePizza(context *gin.Context) {
  //----> Check for error.
  if err != nil {
 	context.JSON(http.StatusBadRequest, gin.H{"message": "Pizza cannot be created!"})
+	return
  }
 
  //----> Send back the response
@@ -54,6 +55,7 @@ func DeletePizzaById(context *gin.Context) {
  //----> Check for error.
  if err != nil {
 	context.JSON(http.StatusNotFound, gin.H{"message": "Pizza cannot be deleted!"})
+	return
  }
 
  //----> Send back the response
@@ -105,7 +107,8 @@ func GetAllPizza(context *gin.Context) {
 
 	if err != nil {
 		context.JSON(http.StatusNotFound, gin.H{"message": "Pizzas cannot be retrieved from database!"})
-	 }
+		return
+	}
 	
 	//----> Send back the response
 	context.JSON(http.StatusOK, gin.H{"message": "Pizzas are retrieved successfully!", "pizzas": pizzas})

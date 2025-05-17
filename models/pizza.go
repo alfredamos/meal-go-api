@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+
 	"github.com/alfredamos/go-meal-api/initializers"
 	"gorm.io/gorm"
 )
@@ -10,7 +11,7 @@ func pizzaGetById(id uint) (Pizza, error){
 	var pizza Pizza //----> Pizza variable.
 	
 	//----> Retrieve the pizza with the given id from the database.
-	result := initializers.DB.Joins("User").First(&pizza, id)
+	result := initializers.DB.Omit("Password").Joins("User").First(&pizza, id)
 	
 	//----> Check for non existent pizza.
 	if result.RowsAffected == 0 {
@@ -94,7 +95,7 @@ func (*Pizza) GetAllPizzas() ([]Pizza, error){
 	var pizzas []Pizza //----> Pizza variable.
 
 	//----> Retrieve pizzas from database.
-	result := initializers.DB.Find(&pizzas)
+	result := initializers.DB.Omit("Password").Joins("User").Find(&pizzas)
 
 	//----> Check for error.
 	if result.RowsAffected == 0 {

@@ -28,6 +28,7 @@ func DeleteUserById(context *gin.Context) {
 	//----> Check if the user exist.
 	if err != nil{
 		context.JSON(http.StatusNotFound, gin.H{"message": "This user cannot be deleted!"})
+		return
 	}
 
 	//----> Send back the response
@@ -45,6 +46,7 @@ func GetAllUsers(context *gin.Context) {
 	//----> Check for error.
 	if err != nil {
 		context.JSON(http.StatusNotFound, gin.H{"status": "failed", "message": "There are no users in the database!", "statusCode": http.StatusNotFound})
+		return
 	}
 
 	//----> Send back the response.
@@ -71,6 +73,7 @@ func GetUserById(context *gin.Context) {
 	//----> Check if the user exist.
 	if err != nil{
 		context.JSON(http.StatusNotFound, gin.H{"message": "The user is not available in the database!"})
+		return
 	}
 
 	//----> Send back the response

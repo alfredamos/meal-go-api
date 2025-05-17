@@ -1,9 +1,7 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
-
 	"github.com/alfredamos/go-meal-api/authenticate"
 	"github.com/alfredamos/go-meal-api/models"
 	"github.com/gin-gonic/gin"
@@ -44,14 +42,12 @@ func EditProfileController(context *gin.Context){
 
 	//----> Check for error.
 	if err != nil {
-		fmt.Println("At point 1, error : ", err)
 		context.JSON(http.StatusBadRequest, gin.H{"message": "Invalid credentials!"})
 		return
 	}
 
 	//----> Save the changed profiles into the database.
 	err = editProfileModel.EditProfile()
-	fmt.Println("At point 2, error : ", err)
 	//----> Check for error.
 	if err != nil {
 		context.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid credentials!"})
@@ -70,7 +66,6 @@ func LoginController(context *gin.Context) {
 	//----> Get the request payload
 	err := context.ShouldBindJSON(&loginModel)
 	
-	fmt.Println("Error : ", err)
 	//----> Check for error
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "Login failed!"})
