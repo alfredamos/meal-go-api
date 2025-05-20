@@ -3,9 +3,7 @@ package models
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"time"
-
 	"github.com/alfredamos/go-meal-api/initializers"
 	"gorm.io/gorm"
 )
@@ -40,11 +38,9 @@ type Order struct {
 }
 
 func (order *Order) DeleteOrderById(id uint) error{
-	//order := Order{} //----> Order variable.
-	fmt.Println("id : ", id)
 	//----> Check to see if the order to be deleted is available in the database.
 	 err := initializers.DB.Model(&Order{}).Preload("CartItems").First(&order, id).Error
-	fmt.Printf("%+v", order.CartItems)
+
 	//----> Check for error.
 	if err != nil {
 		return errors.New("order does not exist")
