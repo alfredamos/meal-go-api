@@ -1,9 +1,9 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
-
 	"github.com/alfredamos/go-meal-api/models"
 	"github.com/gin-gonic/gin"
 )
@@ -14,6 +14,8 @@ func CreatePizza(context *gin.Context) {
 
  //----> Get the request payload
  err := context.ShouldBindJSON(&pizza)
+
+ fmt.Println("error in create-pizza, error : ", err)
 
  //----> Check for error.
  if err != nil {
@@ -104,6 +106,8 @@ func GetAllPizza(context *gin.Context) {
 	
 	//----> Get all pizzas from database.
 	pizzas, err := pizza.GetAllPizzas()
+
+	fmt.Println("Error in get-all-pizza, err : ", err)
 
 	if err != nil {
 		context.JSON(http.StatusNotFound, gin.H{"message": "Pizzas cannot be retrieved from database!"})

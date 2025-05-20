@@ -11,11 +11,9 @@ func RegisterOrderRoutes(server *gin.Engine) {
 	r := server.Use(authenticate.VerifyToken)
 
 	//----> Protected routes.
-	r.POST("/orders", controllers.CreateOrder)
 	r.GET("/orders", controllers.GetAllOrders)
 	r.GET("/orders/orders-by-user-id/:userId", controllers.GetAllOrderByUserId)
 	r.DELETE("/orders/delete-all-orders-by-user-id/:userId", controllers.DeleteOrderByUserId)
-	r.PATCH("/orders/:id", controllers.EditOrderById)
 	r.GET("/orders/:id", controllers.GetOrderById)
 	r.DELETE("/orders/:id", controllers.DeleteOrderById)
 	r.PATCH("/orders/:id/delivered", controllers.OrderDelivered)

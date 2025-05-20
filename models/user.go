@@ -8,21 +8,6 @@ import (
 	//"gorm.io/gorm"
 )
 
-func UserGetById(id uint) (User, error){
-	var user User 
-	//----> User variable.
-	//----> Retrieve the user with the given id from the database.
-	result := initializers.DB.Omit("Password").First(&user, id)
-	
-	//----> Check for non existent user.
-	if result.RowsAffected == 0 {
-		return User{}, errors.New("there is no user with the given id to retrieve from database")
-	}
-	
-	//----> Send back the response.
-   return user, nil
-}
-
 type User struct {
 	gorm.Model
 	Name     string `json:"name" binding:"required"`
@@ -56,7 +41,7 @@ func (user *User) GetAllUsers() ([]User, error) {
 
 func (*User) GetUserById(id uint) (User, error) {
 	//----> Get user with the given id.
-	user, err := UserGetById(id)
+	user, err := userGetById(id)
 
 	//----> Check for error.
 	if err != nil {
@@ -69,7 +54,7 @@ func (*User) GetUserById(id uint) (User, error) {
 
 func (*User) DeleteUserById(id uint) error{
 	//----> Get user with the given id.
-	_, err := UserGetById(id)
+	_, err := userGetById(id)
 
 	//----> Check for error.
 	if err != nil {

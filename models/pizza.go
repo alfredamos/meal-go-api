@@ -7,21 +7,6 @@ import (
 	"gorm.io/gorm"
 )
 
-func pizzaGetById(id uint) (Pizza, error){
-	var pizza Pizza //----> Pizza variable.
-	
-	//----> Retrieve the pizza with the given id from the database.
-	result := initializers.DB.Omit("Password").Joins("User").First(&pizza, id)
-	
-	//----> Check for non existent pizza.
-	if result.RowsAffected == 0 {
-		return Pizza{}, errors.New("the pizza with the given id is not found")
-	}
-	
-	//----> Send back the response.
-   return pizza, nil
-}
-
 
 type Pizza struct {
 	gorm.Model
@@ -32,7 +17,7 @@ type Pizza struct {
 	Image       string `json:"image" binding:"required"`
 	Description string `json:"description" binding:"required"`
 	UserID      uint `json:"userId" binding:"required"`
-	User User 
+	//User User 
 }
 
 func (pizza *Pizza) CreatePizza() error{
@@ -95,7 +80,8 @@ func (*Pizza) GetAllPizzas() ([]Pizza, error){
 	var pizzas []Pizza //----> Pizza variable.
 
 	//----> Retrieve pizzas from database.
-	result := initializers.DB.Omit("Password").Joins("User").Find(&pizzas)
+	//result := initializers.DB.Omit("Password").Joins("User").Find(&pizzas)
+	result := initializers.DB.Find(&pizzas)
 
 	//----> Check for error.
 	if result.RowsAffected == 0 {

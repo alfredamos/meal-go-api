@@ -95,7 +95,12 @@ func (changePasswordModel *ChangePasswordModel) ChangePassword() error {
 	user.Password = string(hashedPassword)
 	
 	//----> Save the change in database.
-	initializers.DB.Save(&user)
+	result = initializers.DB.Save(&user)
+
+	//----> Check for error.
+	if result.RowsAffected == 0{
+		return errors.New("updated password cannot be saved")
+	}
 
 	return nil
 }
@@ -156,7 +161,12 @@ func (editProfileModel *EditProfileModel) EditProfile() error {
 	user.Phone = editProfileModel.Phone
 
 	//----> Save the change in database.
-	initializers.DB.Model(&user).Updates(&user)
+	result = initializers.DB.Model(&user).Updates(&user)
+
+	//----> Check for error.
+	if result.RowsAffected == 0{
+		return errors.New("updated profile cannot be saved")
+	}
 
 	return nil
 }
@@ -207,8 +217,8 @@ func (signup *SignupModel) Signup() error{
 		Gender: signup.Gender,
 		Image: signup.Image,
 		Address: signup.Address,
-		Role: "Customer",
-		//Role: signup.Role,
+		//Role: "Customer",
+		Role: signup.Role,
 		Password: string(hashedPassword),
 	}
 

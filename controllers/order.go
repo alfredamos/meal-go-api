@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -12,13 +13,14 @@ func Home(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"message": "This is home!!!"})
 }
 
-func CreateOrder(context *gin.Context){
+func CheckOutOrder(context *gin.Context){
+	fmt.Println("I want to checkout order please!")
 	//----> Declare the type.
 	var order models.OrderPayload
 	
 	//----> Get the request payload
 	err := context.ShouldBindJSON(&order)
-	//fmt.Println("Error : ", err)
+	fmt.Println("Error : ", err)
 	//----> Check for error.
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "All values must be provided!"})
@@ -26,7 +28,7 @@ func CreateOrder(context *gin.Context){
 	}
 
 	//----> Save the order in the database.
-	order.CreateOrder()
+	order.CheckOutOrder()
 
 	//----> send back the response
 	context.JSON(http.StatusCreated, gin.H{"message": "Order created successfully"})
@@ -68,32 +70,34 @@ func DeleteOrderByUserId(context *gin.Context){
 		return
 	}
 
-	//----> delete all orders attach to this userId.
-	order.DeleteOrderByUserId(uint(userId))
+	//----> Delete all orders attach to this userId.
+	err := order.DeleteOrderByUserId(uint(userId))
+
+	//----> Check for error
+	if err != nil {
+		context.JSON(http.StatusNotFound, gin.H{"status": "fail", "message": "orders are not available in the database!"})
+		return
+	}
 
 	//----> Send back the response.
 	context.JSON(http.StatusOK, gin.H{"message": "orders deleted by userId successfully!"})
 }
 
-func EditOrderById(context *gin.Context){
+func DeleteAllOrders(context *gin.Context){
 	//----> Declare the order type.
 	var order models.Order
 
-	//----> Get the id from param.
-	idd := context.Param("id")
-	id, errId := strconv.ParseUint(idd, 10, 32)
+	//----> Delete all orders.
+	err := order.DeleteAllOrders()
 
-	//----> Check for error.
-	if errId != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": "Please provide a valid id!"})
+	//----> Check for error
+	if err != nil {
+		context.JSON(http.StatusNotFound, gin.H{"status": "fail", "message": "orders are not available in the database!"})
 		return
 	}
 
-	//----> delete the order associated with this id.
-	order.EditOrderId(uint(id))
-
-	//----> send back the response.
-	context.JSON(http.StatusOK, gin.H{"message": "Order is edited successfully!"})
+	//----> Send back the response.
+	context.JSON(http.StatusOK, gin.H{"message": "orders deleted successfully!"})
 }
 
 func GetAllOrders(context *gin.Context){
@@ -101,10 +105,16 @@ func GetAllOrders(context *gin.Context){
 	var order models.Order
 
 	//----> Get all orders from the database.
-	order.GetAllOrders()
+	orders, err := order.GetAllOrders()
+
+	//----> Check for error.
+	if err != nil {
+		context.JSON(http.StatusNotFound, gin.H{"status": "fail", "message": "orders cannot be retrieved!"})
+		return
+	}
 
 	//----> Send back the response.
-	context.JSON(http.StatusOK, gin.H{"message": "Orders are retrieved successfully!"})
+	context.JSON(http.StatusOK, gin.H{"status": "success" , "message": "Orders are retrieved successfully!", "orders": orders})
 }
 
 func GetAllOrderByUserId(context *gin.Context){
@@ -112,7 +122,7 @@ func GetAllOrderByUserId(context *gin.Context){
 	var order models.Order
 
 	//----> Get the user-id from param.
-	userIdd := context.Param("id")
+	userIdd := context.Param("userId")
 	userId, errUserId := strconv.ParseUint(userIdd, 10, 32)
 	
 	//----> Check for error.
@@ -122,21 +132,43 @@ func GetAllOrderByUserId(context *gin.Context){
 	}
 
 	//----> Get all the orders by given user-id.
-	order.GetAllOrdersByUserId(uint(userId))
+	orders, err := order.GetAllOrdersByUserId(uint(userId))
+
+	//----> Check for error.
+	if err != nil {
+		context.JSON(http.StatusNotFound, gin.H{"status": "fail", "message": "orders cannot be retrieved!"})
+		return
+	}
 
 	//----> Send back the response.
-	context.JSON(http.StatusOK, gin.H{"message": "Orders are retrieved successfully!"})
+	context.JSON(http.StatusOK, gin.H{"status": "success" , "message": "Orders are retrieved successfully!", "orders": orders})
 }
 
 func GetOrderById(context *gin.Context){
-//----> declare the order variable.
-var order models.Order
+	//----> declare the order variable.
+	var order models.Order
 
-//----> Get all the orders by given user-id.
-order.GetAllOrders()
+	//----> The id from params.
+	idd:= context.Param("id")
+	id, errId:= strconv.ParseUint(idd, 10, 32)
 
-//----> Send back the response.
-context.JSON(http.StatusOK, gin.H{"message": "Orders are retrieved successfully!"})
+	//----> Check for error.
+	if errId != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"message": "Please provide a valid id!"})
+		return
+	}
+
+	//----> Get all the orders by given user-id.
+	order, err := order.GetOrderById(uint(id))
+
+	//----> Check for error.
+	if err != nil {
+		context.JSON(http.StatusNotFound, gin.H{"status": "fail", "message": "order cannot be retrieved!"})
+		return
+	}
+
+	//----> Send back the response.
+	context.JSON(http.StatusOK, gin.H{"status": "success" , "message": "Orders are retrieved successfully!", "order": order})
 }
 
 func OrderDelivered(context *gin.Context){

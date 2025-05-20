@@ -36,9 +36,10 @@ func RegisteredRoutes(server *gin.Engine){
 	r.PATCH("/cart-items/:id", controllers.EditCartItemById)
 
 	//----> Order routes.
+	r.PATCH("/orders/checkout", controllers.CheckOutOrder)
 	r.GET("/orders/orders-by-user-id/:userId", controllers.GetAllOrderByUserId)
 	r.DELETE("/orders/delete-all-orders-by-user-id/:userId", controllers.DeleteOrderByUserId)
-	r.PATCH("/orders/:id", controllers.EditOrderById)
+	r.DELETE("/orders/delete-all-orders", controllers.DeleteAllOrders)
 	r.GET("/orders/:id", controllers.GetOrderById)
 	r.DELETE("/orders/:id", controllers.DeleteOrderById)
 	
@@ -51,7 +52,6 @@ func RegisteredRoutes(server *gin.Engine){
 
 	//----> Orders routes.
 	p.GET("/orders", controllers.GetAllOrders)
-	p.POST("/orders", controllers.CreateOrder)
 	p.PATCH("/orders/:id/delivered", controllers.OrderDelivered)
 	p.PATCH("/orders/:id/shipped", controllers.OrderShipped)
 

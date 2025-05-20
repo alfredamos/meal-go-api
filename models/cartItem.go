@@ -2,27 +2,19 @@ package models
 
 import (
 	"errors"
+	"time"
+
 	"github.com/alfredamos/go-meal-api/initializers"
 	"gorm.io/gorm"
 )
 
-func cartItemGetById(id uint) (CartItem, error){
-	var cartItem CartItem //----> Declaration.
 
-	//----> Retrieve the cart-item with given id from database.
-	result := initializers.DB.Joins("Pizza").Joins("Order").First(&cartItem, id)
-
-	//----> Check for error.
-	if result.RowsAffected == 0 {
-		return CartItem{}, errors.New("the cart-item with the given id is not found")
-	}
-
-	//----> Send back the response.
-	return cartItem, nil
-}
 
 type CartItem struct {
-	gorm.Model
+	ID        uint           `gorm:"primaryKey"`
+  CreatedAt time.Time
+  UpdatedAt time.Time
+  DeletedAt gorm.DeletedAt `gorm:"index"`
 	Name     string `json:"name" binding:"required"`
 	Price    float64 `json:"price" binding:"required"`
 	Quantity float64 `json:"quantity" binding:"required"`
