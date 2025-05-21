@@ -22,10 +22,10 @@ type Pizza struct {
 
 func (pizza *Pizza) CreatePizza() error{
 	//---->  Create the pizza.
-	result := initializers.DB.Create(&pizza)
+	err := initializers.DB.Create(&pizza).Error
 
 	//----> Check for error.
-	if result.RowsAffected == 0{
+	if err != nil{
 		return errors.New("pizza creation fails")
 	}
 
@@ -43,10 +43,10 @@ func (*Pizza) DeletePizzaById(id uint) error{
 	}
 
 	//----> Delete pizza from the database.
-	result := initializers.DB.Unscoped().Delete(&Pizza{}, id)
+	err = initializers.DB.Unscoped().Delete(&Pizza{}, id).Error
 
 	//----> Check for error.
-	if result.RowsAffected == 0{
+	if err != nil{
 		return errors.New("pizza cannot be deleted")
 	}
 
@@ -65,10 +65,10 @@ func (pizza *Pizza) EditPizzaId(id uint) error{
 	}
 
 	//----> Update the cart-item in the database.
-	result := initializers.DB.Model(&pizza).Updates(&pizza)
+	err = initializers.DB.Model(&pizza).Updates(&pizza).Error
 
 	//----> Check for error.
-	if result.RowsAffected == 0 {
+	if err != nil {
 		return errors.New("pizza cannot be updated")
 	}
 
@@ -81,10 +81,10 @@ func (*Pizza) GetAllPizzas() ([]Pizza, error){
 
 	//----> Retrieve pizzas from database.
 	//result := initializers.DB.Omit("Password").Joins("User").Find(&pizzas)
-	result := initializers.DB.Find(&pizzas)
+	err := initializers.DB.Find(&pizzas).Error
 
 	//----> Check for error.
-	if result.RowsAffected == 0 {
+	if err != nil {
 		return []Pizza{}, errors.New("there are no pizzas to retrieve from database")
 	}
 

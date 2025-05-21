@@ -17,10 +17,10 @@ func (loginModel *LoginModel) Login() (string, error) {
 	
 	//----> Check if the user email is attached to a genuine user.
 	email := loginModel.Email
-	result := initializers.DB.Where("email = ?", email).First(&user)
+	err := initializers.DB.Where("email = ?", email).First(&user).Error
 
 	//----> Record exist.
-	if result.RowsAffected == 0{		
+	if err != nil{		
 		return string(""), errors.New("invalid credentials")
 	}
 
@@ -68,10 +68,10 @@ func (changePasswordModel *ChangePasswordModel) ChangePassword() error {
 	}
 
 	//----> Check for existence of user by getting first marched record.
-	result := initializers.DB.Where("email = ?", email).First(&user)
+	err := initializers.DB.Where("email = ?", email).First(&user).Error
 
 	//----> Record does not exist.
-	if result.RowsAffected == 0{		
+	if err != nil{		
 		return errors.New("invalid credentials")
 	}
 
@@ -95,10 +95,10 @@ func (changePasswordModel *ChangePasswordModel) ChangePassword() error {
 	user.Password = string(hashedPassword)
 	
 	//----> Save the change in database.
-	result = initializers.DB.Save(&user)
+	err = initializers.DB.Save(&user).Error
 
 	//----> Check for error.
-	if result.RowsAffected == 0{
+	if err != nil{
 		return errors.New("updated password cannot be saved")
 	}
 
@@ -137,10 +137,10 @@ func (editProfileModel *EditProfileModel) EditProfile() error {
 
 	//----> Check for the availability of user.
 	email := editProfileModel.Email
-	result := initializers.DB.Where("email = ?", email).First(&user)
+	err := initializers.DB.Where("email = ?", email).First(&user).Error
 
 	//----> Record does not exist.
-	if result.RowsAffected == 0{		
+	if err != nil{		
 		return errors.New("invalid credentials")
 	}
 
@@ -161,10 +161,10 @@ func (editProfileModel *EditProfileModel) EditProfile() error {
 	user.Phone = editProfileModel.Phone
 
 	//----> Save the change in database.
-	result = initializers.DB.Model(&user).Updates(&user)
+	err = initializers.DB.Model(&user).Updates(&user).Error
 
 	//----> Check for error.
-	if result.RowsAffected == 0{
+	if err != nil{
 		return errors.New("updated profile cannot be saved")
 	}
 
@@ -194,10 +194,10 @@ func (signup *SignupModel) Signup() error{
 	}
 	
 	//----> Check for existence of user by getting first marched record.
-	result := initializers.DB.Where("email = ?", signup.Email).First(&user)
+	err := initializers.DB.Where("email = ?", signup.Email).First(&user).Error
 
 	//----> Record exist.
-	if result.RowsAffected > 0{		
+	if err == nil{		
 		return errors.New("invalid credentials")
 	}
 

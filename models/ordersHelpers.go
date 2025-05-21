@@ -10,8 +10,11 @@ import (
 )
 
 func CalTotalPriceAndQuantity(carts Carts) (float64, float64) {
-	totalQuantity := 0.0
-	totalPrice := 0.0
+	//----> Initialize totalQuantity and totalPrice.
+	totalQuantity := 0.0 //----> Total quantity
+	totalPrice := 0.0 //----> Total price.
+
+	//----> Calculate the totalQuantity and totalPrice.
 	for _, value := range carts {
 		totalQuantity += value.Quantity
 		totalPrice += value.Quantity * value.Price
@@ -63,10 +66,9 @@ func makeCart(carts []Cart, orderId uint) []CartItem {
 func deleteManyCartItems(carts []CartItem, id uint) error{
 	//----> Get all the ids of the cart-items to be deleted.
 	cartItems := getAllCartItemsIds(carts)
-	fmt.Printf("%+v", cartItems)
+	
 	//----> Delete all cart-items.
 	err := initializers.DB.Unscoped().Delete(&cartItems).Error
-	//result := initializers.DB.Unscoped().Delete(&cartItems)
 
 	//----> Check for error.
 	if err != nil {
@@ -78,6 +80,8 @@ func deleteManyCartItems(carts []CartItem, id uint) error{
 
 func deleteManyOrders(orders []Order) error{
 	allOrders := make([]Order,0) //----> orders - ids.
+	
+	//----> Get ids of orders to be deleted.
 	for _, order := range orders{
 		oneOrder := Order{ID: order.ID}//----> Order-id.
 		allOrders  = append(allOrders , oneOrder) //----> orders-ids.
@@ -91,10 +95,10 @@ func deleteManyOrders(orders []Order) error{
 	}
 
 	//----> Delete all orders.
-	result := initializers.DB.Unscoped().Delete(&allOrders)
+	err := initializers.DB.Unscoped().Delete(&allOrders).Error
 
 	//----> Check for error.
-	if result.RowsAffected == 0 {
+	if err != nil {
 		return errors.New("orders cannot be deleted")
 	}
 
@@ -102,17 +106,26 @@ func deleteManyOrders(orders []Order) error{
 }
 
 func shippingInfo(order Order) error{
+	//----> Check if order is already deliver, then return.
+	/* if order.IsDelivered {
+		return errors.New("order is already delivered")
+	}
+
+	//----> Check if order is already deliver, then return
+	if order.IsShipped {
+		return errors.New("order has already been shipped")
+	} */
 	//----> Update the order shipping info.
 	order.IsShipped = true //----> Order shipped.
 	order.IsPending = false //----> Order no longer pending.
-	order.ShippingDate = sql.NullTime{Time: time.Now()} //----> Order shipping date.
+	order.ShippingDate = sql.NullTime{Time: time.Now(), Valid: true} //----> Order shipping date.
 	order.Status = "Shipped" //----> Order status.
 
 	//----> Update order in the database.
-	result := initializers.DB.Save(&order)
+	err := initializers.DB.Save(&order).Error
 
 	//----> Check for error.
-	if result.RowsAffected == 0 {
+	if err != nil {
 		return errors.New("order shipping info cannot be saved")
 	}
 
@@ -121,16 +134,28 @@ func shippingInfo(order Order) error{
 }
 
 func deliveryInfo(order Order) error{
+	fmt.Println("is-shipped : ", order.IsShipped)
+	fmt.Println("is-delivered : ", order.IsDelivered)
+	//----> Check if order is already deliver, then return.
+	if order.IsDelivered {
+		return errors.New("order has been delivered")
+	}
+
+	//----> Check if order has been shipped, if not return as order must be shipped before delivery.
+	if !order.IsShipped {
+		return errors.New("order is yet to be shipped")
+	}
+
 	//----> Update the order delivery info.
 	order.IsDelivered = true; //----> Order shipped.
-	order.DeliveryDate = sql.NullTime{Time: time.Now()} //----> Order shipping date.
+	order.DeliveryDate = sql.NullTime{Time: time.Now(), Valid: true} //----> Order shipping date.
 	order.Status = "Delivered" //----> Order status.
 	
 	//----> Update order in the database.
-	result := initializers.DB.Save(&order)
+	err := initializers.DB.Save(&order).Error
 
 	//----> Check for error.
-	if result.RowsAffected == 0 {
+	if err != nil {
 		return errors.New("order shipping info cannot be saved")
 	}
 

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"time"
+
 	"github.com/alfredamos/go-meal-api/initializers"
 	"gorm.io/gorm"
 )
@@ -58,10 +59,10 @@ func (order *Order) DeleteOrderById(id uint) error{
 	} 
  
 	//----> Delete the order with given id.
-	result := initializers.DB.Unscoped().Delete(&Order{}, id)
+	err = initializers.DB.Unscoped().Delete(&Order{}, id).Error
 
 	//----> Check for error.
-	if result.RowsAffected == 0 {
+	if err != nil {
 		return errors.New("order cannot be deleted")
 	}
 
@@ -160,15 +161,15 @@ func (*Order) OrderDelivered(id uint) error{
 	order := Order{}
 
 	//----> Retrieve the order.
-	result := initializers.DB.First(&order, id)
+	err := initializers.DB.First(&order, id).Error
 
 	//----> Check for error.
-	if result.RowsAffected == 0 {
+	if err != nil {
 		return errors.New("order cannot be found")
 	}
 
 	//----> Update the shipping info.
-	err := deliveryInfo(order)
+	err = deliveryInfo(order)
 
 	//----> Check for error.
 	if err != nil{
@@ -179,20 +180,20 @@ func (*Order) OrderDelivered(id uint) error{
 	return nil
 }
 
-func (*Order)OrderShipped(id uint) error{
+func (*Order) OrderShipped(id uint) error{
 	//----> Order variable.
 	order := Order{}
 
 	//----> Retrieve the order.
-	result := initializers.DB.First(&order, id)
+	err := initializers.DB.First(&order, id).Error
 
 	//----> Check for error.
-	if result.RowsAffected == 0 {
+	if err != nil {
 		return errors.New("order cannot be found")
 	}
 
 	//----> Update the shipping info.
-	err := shippingInfo(order)
+	err = shippingInfo(order)
 
 	//----> Check for error.
 	if err != nil{
@@ -229,10 +230,10 @@ func (order *OrderPayload) CheckOutOrder() error{
 	orderPayload := makeOrder(carts, order.UserId)
 
 	//----> Insert order in the database.
-	result := initializers.DB.Create(&orderPayload)
+	err := initializers.DB.Create(&orderPayload).Error
 
 	//----> Check for error.
-	if result.RowsAffected == 0{
+	if err != nil{
 		return errors.New("order creation fails")
 	}
 
@@ -240,10 +241,10 @@ func (order *OrderPayload) CheckOutOrder() error{
 	cartItems := makeCart(carts, orderPayload.ID)
 
 	//----> Insert all the cart-items with the given order-id in the database.
-	result = initializers.DB.CreateInBatches(&cartItems, len(cartItems))
+	err = initializers.DB.CreateInBatches(&cartItems, len(cartItems)).Error
 
 	//----> Check for error.
-	if result.RowsAffected == 0{
+	if err != nil{
 		return errors.New("cartItems creation fails")
 	}
 

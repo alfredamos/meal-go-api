@@ -11,10 +11,10 @@ func cartItemGetById(id uint) (CartItem, error) {
 	var cartItem CartItem //----> Declaration.
 
 	//----> Retrieve the cart-item with given id from database.
-	result := initializers.DB.First(&cartItem, id)
+	err := initializers.DB.First(&cartItem, id).Error
 
 	//----> Check for error.
-	if result.RowsAffected == 0 {
+	if err != nil {
 		return CartItem{}, errors.New("the cart-item with the given id is not found")
 	}
 
@@ -26,10 +26,10 @@ func pizzaGetById(id uint) (Pizza, error) {
 	var pizza Pizza //----> Pizza variable.
 
 	//----> Retrieve the pizza with the given id from the database.
-	result := initializers.DB.First(&pizza, id)
+	err := initializers.DB.First(&pizza, id).Error
 
 	//----> Check for non existent pizza.
-	if result.RowsAffected == 0 {
+	if err != nil {
 		return Pizza{}, errors.New("the pizza with the given id is not found")
 	}
 
@@ -40,10 +40,10 @@ func pizzaGetById(id uint) (Pizza, error) {
 func userGetById(id uint) (User, error) {
 	var user User //----> User variable.
 	//----> Retrieve the user with the given id from the database.
-	result := initializers.DB.Omit("Password").First(&user, id)
+ 	err:= initializers.DB.Omit("Password").First(&user, id).Error
 
 	//----> Check for non existent user.
-	if result.RowsAffected == 0 {
+	if err != nil {
 		return User{}, errors.New("there is no user with the given id to retrieve from database")
 	}
 
@@ -57,7 +57,7 @@ type CartL struct {
 
 func getAllCartItemsIds(carts []CartItem)[]CartItem{
 	cartItems := make([]CartItem, 0) //----> Slice of cart-ids
-	//cartItem := CartL{}
+	
 	for _, cart := range carts {
 		cartItem := CartItem{ ID: cart.ID}
 

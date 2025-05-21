@@ -199,7 +199,16 @@ if err != nil {
 }
 
 //----> Change the order status.
-order.OrderDelivered(uint(id))
+err = order.OrderDelivered(uint(id))
+
+//----> Check for error.
+if err != nil {
+	context.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "Order is yet to be shipped or has already been deliver"})
+	return
+ }
+
+ //----> Send back the response.
+ context.JSON(http.StatusOK, gin.H{"status": "success", "message": "Order delivered successfully!"})
 
 }
 func OrderShipped(context *gin.Context){
@@ -217,6 +226,15 @@ func OrderShipped(context *gin.Context){
  }
 
  //----> Change the order status.
- order.OrderShipped(uint(id))
+ err := order.OrderShipped(uint(id))
+
+ //----> Check for error.
+ if err != nil {
+	context.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "Order has already been shipped or deliver"})
+	return
+ }
+
+ //----> Send back the response.
+ context.JSON(http.StatusOK, gin.H{"status": "success", "message": "Order shipped successfully!"})
 
 }

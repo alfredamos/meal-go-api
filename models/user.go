@@ -28,10 +28,10 @@ func (user *User) GetAllUsers() ([]User, error) {
 	var users []User
 	
 	//----> Retrieve the users from the database.
-	result := initializers.DB.Omit("Password").Find(&users)
+	err := initializers.DB.Omit("Password").Find(&users).Error
 	
 	//----> Check for empty slice of user.
-	if result.RowsAffected == 0 {
+	if err != nil {
 		return []User{}, errors.New("there are no users to retrieve from database")
 	}
 
@@ -62,10 +62,10 @@ func (*User) DeleteUserById(id uint) error{
 	}
 
 	//----> Delete the user.
-	result := initializers.DB.Unscoped().Delete(&User{}, id)
+	err = initializers.DB.Unscoped().Delete(&User{}, id).Error
 
 	//----> Check for error.
-	if result.RowsAffected == 0 {
+	if err != nil {
 		return errors.New("this user cannot be deleted")
 	}
 	

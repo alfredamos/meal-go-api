@@ -27,10 +27,10 @@ type CartItem struct {
 
 func (cartItem *CartItem) CreateCartItem() error{
 	//----> Insert the cart-item into the database.
-	result := initializers.DB.Create(&cartItem) 
+	err := initializers.DB.Create(&cartItem).Error 
 
 	//----> Check for error.
-	if result.RowsAffected == 0 {
+	if err != nil {
 		return errors.New("cart-item is not created")
 	}
 
@@ -48,10 +48,10 @@ func (*CartItem) DeleteCartItemById(id uint) error{
 	}
 
 	//----> Delete the cart-item with the given id from database.
-	result := initializers.DB.Delete(&CartItem{}, id)
+	err = initializers.DB.Delete(&CartItem{}, id).Error
 	
 	//----> Check for error.
-	if result.RowsAffected == 0 {
+	if err != nil {
 		return errors.New("cart-item cannot be deleted")
 	}
 
@@ -69,10 +69,10 @@ func (cartItem *CartItem) EditCartItemId(id uint) error{
 	}
 
 	//----> Update the cart-item in the database.
-	result := initializers.DB.Model(&cartItem).Updates(&cartItem)
+	err = initializers.DB.Model(&cartItem).Updates(&cartItem).Error
 
 	//----> Check for error.
-	if result.RowsAffected == 0 {
+	if err != nil {
 		return errors.New("cart-item cannot be updated")
 	}
 
@@ -84,10 +84,10 @@ func (*CartItem) GetAllCartItems() ([]CartItem, error){
 	var cartItems []CartItem //----> Declaration.
 
 	//----> Retrieve the cart-items from the database.
-	result := initializers.DB.Find(&cartItems)
+	err := initializers.DB.Find(&cartItems).Error
 
 	//----> Check for error.
-	if result.RowsAffected == 0 {
+	if err != nil {
 		return []CartItem{}, errors.New("cart-items are not found")
 	}
 
