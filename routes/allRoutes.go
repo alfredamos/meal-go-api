@@ -22,6 +22,11 @@ func RegisteredRoutes(server *gin.Engine){
 	//----> Apply middleware for protected routes
 	r := server.Use(authenticate.VerifyToken)
 
+	//----> Admin role permitted routes middleware.
+	list = append(list, "Admin")
+	p := server.Use(authenticate.VerifyToken, authenticate.RolePermission(list))
+
+
 	//----> Protected routes.
 	//----> Auth routes.
 	r.PATCH("/auth/change-password", controllers.ChangePasswordController)
@@ -39,19 +44,17 @@ func RegisteredRoutes(server *gin.Engine){
 	r.PATCH("/orders/checkout", controllers.CheckOutOrder)
 	r.GET("/orders/orders-by-user-id/:userId", controllers.GetAllOrderByUserId)
 	r.DELETE("/orders/delete-all-orders-by-user-id/:userId", controllers.DeleteOrderByUserId)
-	r.DELETE("/orders/delete-all-orders", controllers.DeleteAllOrders)
+	
 	r.GET("/orders/:id", controllers.GetOrderById)
 	r.DELETE("/orders/:id", controllers.DeleteOrderById)
 	
 	//----> Pizza-routes.
 	r.GET("/pizzas/:id", controllers.GetPizzaById)
 
-	//----> Admin role permitted routes middleware.
-	list = append(list, "Admin")
-	p := server.Use(authenticate.VerifyToken, authenticate.RolePermission(list))
-
+	
 	//----> Orders routes.
 	p.GET("/orders", controllers.GetAllOrders)
+	p.DELETE("/orders/delete-all-orders", controllers.DeleteAllOrders)
 	p.PATCH("/orders/:id/delivered", controllers.OrderDelivered)
 	p.PATCH("/orders/:id/shipped", controllers.OrderShipped)
 

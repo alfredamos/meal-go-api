@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/alfredamos/go-meal-api/authenticate"
 	"github.com/alfredamos/go-meal-api/models"
 	"github.com/gin-gonic/gin"
 )
@@ -62,16 +63,25 @@ func DeleteOrderByUserId(context *gin.Context){
 
 	//----> Get the id from param.
 	userIdd := context.Param("userId")
-	userId, errId := strconv.ParseUint(userIdd, 10, 32)
+	userId, err := strconv.ParseUint(userIdd, 10, 32)
 
 	//----> Check for error.
-	if errId != nil {
+	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "Please provide valid id!"})
 		return
 	}
 
+	//----> Check for ownership permission
+	err = authenticate.OwnerAuthorize(uint(userId), context)
+
+	//----> Check for ownership.
+	if err != nil {
+		context.JSON(http.StatusForbidden, gin.H{"status": "fail", "message": "You are not permitted to view or perform any action on this page!"})
+		return
+	}
+
 	//----> Delete all orders attach to this userId.
-	err := order.DeleteOrderByUserId(uint(userId))
+	err = order.DeleteOrderByUserId(uint(userId))
 
 	//----> Check for error
 	if err != nil {
@@ -123,11 +133,20 @@ func GetAllOrderByUserId(context *gin.Context){
 
 	//----> Get the user-id from param.
 	userIdd := context.Param("userId")
-	userId, errUserId := strconv.ParseUint(userIdd, 10, 32)
+	userId, err := strconv.ParseUint(userIdd, 10, 32)
 	
 	//----> Check for error.
-	if errUserId != nil {
+	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "Please provide valid userId!"})
+		return
+	}
+
+	//----> Check for ownership permission
+	err = authenticate.OwnerAuthorize(uint(userId), context)
+
+	//----> Check for ownership.
+	if err != nil {
+		context.JSON(http.StatusForbidden, gin.H{"status": "fail", "message": "You are not permitted to view or perform any action on this page!"})
 		return
 	}
 
@@ -150,16 +169,16 @@ func GetOrderById(context *gin.Context){
 
 	//----> The id from params.
 	idd:= context.Param("id")
-	id, errId:= strconv.ParseUint(idd, 10, 32)
+	id, err := strconv.ParseUint(idd, 10, 32)
 
 	//----> Check for error.
-	if errId != nil {
+	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "Please provide a valid id!"})
 		return
 	}
 
 	//----> Get all the orders by given user-id.
-	order, err := order.GetOrderById(uint(id))
+	order, err = order.GetOrderById(uint(id))
 
 	//----> Check for error.
 	if err != nil {
@@ -177,10 +196,10 @@ var order models.Order
 
 //----> Get the user-id from param.
 idd := context.Param("id")
-id, errUserId := strconv.ParseUint(idd, 10, 32)
+id, err := strconv.ParseUint(idd, 10, 32)
 
 //----> Check for error.
-if errUserId != nil {
+if err != nil {
 	context.JSON(http.StatusBadRequest, gin.H{"message": "Please provide valid userId!"})
 	return
 }

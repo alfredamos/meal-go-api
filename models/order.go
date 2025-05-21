@@ -13,7 +13,7 @@ type Status string
 const (
 	Delivered Status = "Delivered"
 	Pending Status = "Pending"
-	Shipped Status = "Shipped"
+	Shipped Status = "Shipped" 
 )
 
 type Order struct {

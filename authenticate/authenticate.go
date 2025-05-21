@@ -19,7 +19,7 @@ func GenerateToken(name string, email string, userId uint, role string) (string,
 
 func VerifyToken(c *gin.Context){
 	//----> Get the token from cookie.
-	token, err := GetTokenFromCookie(c)
+	token, err := getTokenFromCookie(c)
 
 	//----> Check for error.
 	if err != nil{
@@ -40,11 +40,11 @@ func VerifyToken(c *gin.Context){
 
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail","message": "Invalid credential!", "statusCode": http.StatusUnauthorized})
-		return 
+		os.Exit(1)
 	}
 
 	isValidToken := parsedToken.Valid
-
+	
 	if !isValidToken {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail","message": "Invalid credential!", "statusCode": http.StatusUnauthorized})
 		return 
@@ -55,11 +55,13 @@ func VerifyToken(c *gin.Context){
 		name := claims["name"].(string)
 		email := claims["email"].(string)
 		role := claims["role"].(string)
+		userId := claims["userId"]
 
 		//----> Set the claims on gin context
 		c.Set("name", name)
 		c.Set("email", email)
 		c.Set("role", role)
+		c.Set("userId", userId)
 		c.Next()
 	} else {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail","message": "Invalid credential!", "statusCode": http.StatusUnauthorized})
@@ -68,7 +70,7 @@ func VerifyToken(c *gin.Context){
 
 }
 
-func GetTokenFromCookie(c *gin.Context) (string, error) {
+func getTokenFromCookie(c *gin.Context) (string, error) {
 	token, err := c.Cookie("token")
 	if err != nil {
 			c.AbortWithStatus(http.StatusUnauthorized)
@@ -80,7 +82,30 @@ func GetTokenFromCookie(c *gin.Context) (string, error) {
 
 }
 
-func GetRole(role string) string {
+type jToken *jwt.Token
+
+func validateToken(c *gin.Context, token string) (jToken, bool){
+	parsedToken, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error){
+		_, ok := token.Method.(*jwt.SigningMethodHMAC)
+		if !ok {
+			return nil, errors.New("unexpected signing method")
+		}
+
+		//----> Return the secret key for signing
+    return []byte(secretKey), nil
+	})
+
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail","message": "Invalid credential!", "statusCode": http.StatusUnauthorized})
+		os.Exit(1)
+	}
+
+	isValidToken := parsedToken.Valid
+
+	return parsedToken, isValidToken
+}
+
+func getRole(role string) string {
 	if role == "Admin" {
 		return "senior"
 	}
