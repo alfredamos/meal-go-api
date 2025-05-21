@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -10,18 +9,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Home(context *gin.Context) {
-	context.JSON(http.StatusOK, gin.H{"message": "This is home!!!"})
-}
-
 func CheckOutOrder(context *gin.Context){
-	fmt.Println("I want to checkout order please!")
 	//----> Declare the type.
 	var order models.OrderPayload
 	
 	//----> Get the request payload
 	err := context.ShouldBindJSON(&order)
-	fmt.Println("Error : ", err)
+	
 	//----> Check for error.
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "All values must be provided!"})

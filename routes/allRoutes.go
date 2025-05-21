@@ -20,7 +20,7 @@ func RegisteredRoutes(server *gin.Engine){
 	server.GET("/pizzas", controllers.GetAllPizza)
 
 	//----> Apply middleware for protected routes
-	r := server.Use(authenticate.VerifyToken)
+	r := server.Use(authenticate.VerifyTokenJwt)
 
 	//----> Admin role permitted routes middleware.
 	list = append(list, "Admin")

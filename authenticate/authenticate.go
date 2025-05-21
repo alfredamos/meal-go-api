@@ -69,6 +69,38 @@ func VerifyToken(c *gin.Context){
 	}
 
 }
+func VerifyTokenJwt(c *gin.Context){
+	//----> Get the token from cookie.
+	token, err := getTokenFromCookie(c)
+
+	//----> Check for error.
+	if err != nil{
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail","message": "Invalid credential!", "statusCode": http.StatusUnauthorized})
+		return 
+	}
+
+	//----> Check for valid token
+	 parsedToken := validateToken(c, token)
+	
+	if claims, ok := parsedToken.Claims.(jwt.MapClaims); ok && parsedToken.Valid {
+		//----> Access claims
+		name := claims["name"].(string)
+		email := claims["email"].(string)
+		role := claims["role"].(string)
+		userId := claims["userId"]
+
+		//----> Set the claims on gin context
+		c.Set("name", name)
+		c.Set("email", email)
+		c.Set("role", role)
+		c.Set("userId", userId)
+		c.Next()
+	} else {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail","message": "Invalid credential!", "statusCode": http.StatusUnauthorized})
+		return 
+	}
+
+}
 
 func getTokenFromCookie(c *gin.Context) (string, error) {
 	token, err := c.Cookie("token")
@@ -84,7 +116,7 @@ func getTokenFromCookie(c *gin.Context) (string, error) {
 
 type jToken *jwt.Token
 
-func validateToken(c *gin.Context, token string) (jToken, bool){
+func validateToken(c *gin.Context, token string) jToken{
 	parsedToken, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error){
 		_, ok := token.Method.(*jwt.SigningMethodHMAC)
 		if !ok {
@@ -102,7 +134,12 @@ func validateToken(c *gin.Context, token string) (jToken, bool){
 
 	isValidToken := parsedToken.Valid
 
-	return parsedToken, isValidToken
+	if !isValidToken {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail","message": "Invalid credential!", "statusCode": http.StatusUnauthorized})
+		os.Exit(1) 
+	}
+
+	return parsedToken
 }
 
 func getRole(role string) string {
