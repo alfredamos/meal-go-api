@@ -24,7 +24,7 @@ func RegisteredRoutes(server *gin.Engine){
 
 	//----> Admin role permitted routes middleware.
 	list = append(list, "Admin")
-	p := server.Use(authenticate.VerifyToken, authenticate.RolePermission(list))
+	p := server.Use(authenticate.VerifyTokenJwt, authenticate.RolePermission(list))
 
 
 	//----> Protected routes.

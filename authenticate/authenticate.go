@@ -17,58 +17,6 @@ func GenerateToken(name string, email string, userId uint, role string) (string,
 	return token.SignedString([]byte(secretKey))
 }
 
-func VerifyToken(c *gin.Context){
-	//----> Get the token from cookie.
-	token, err := getTokenFromCookie(c)
-
-	//----> Check for error.
-	if err != nil{
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail","message": "Invalid credential!", "statusCode": http.StatusUnauthorized})
-		return 
-	}
-
-	//----> Check for valid token
-	parsedToken, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error){
-		_, ok := token.Method.(*jwt.SigningMethodHMAC)
-		if !ok {
-			return nil, errors.New("unexpected signing method")
-		}
-
-		//----> Return the secret key for signing
-    return []byte(secretKey), nil
-	})
-
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail","message": "Invalid credential!", "statusCode": http.StatusUnauthorized})
-		os.Exit(1)
-	}
-
-	isValidToken := parsedToken.Valid
-	
-	if !isValidToken {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail","message": "Invalid credential!", "statusCode": http.StatusUnauthorized})
-		return 
-	}
-
-	if claims, ok := parsedToken.Claims.(jwt.MapClaims); ok && parsedToken.Valid {
-		//----> Access claims
-		name := claims["name"].(string)
-		email := claims["email"].(string)
-		role := claims["role"].(string)
-		userId := claims["userId"]
-
-		//----> Set the claims on gin context
-		c.Set("name", name)
-		c.Set("email", email)
-		c.Set("role", role)
-		c.Set("userId", userId)
-		c.Next()
-	} else {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail","message": "Invalid credential!", "statusCode": http.StatusUnauthorized})
-		return 
-	}
-
-}
 func VerifyTokenJwt(c *gin.Context){
 	//----> Get the token from cookie.
 	token, err := getTokenFromCookie(c)
@@ -79,7 +27,7 @@ func VerifyTokenJwt(c *gin.Context){
 		return 
 	}
 
-	//----> Check for valid token
+	//----> Parsed token and check validity.
 	 parsedToken := validateToken(c, token)
 
 	 //----> Get user claims.
@@ -90,25 +38,10 @@ func VerifyTokenJwt(c *gin.Context){
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail","message": "Invalid credential!", "statusCode": http.StatusUnauthorized})
 		return
 	}
+
+	//----> User authenticated.
 	c.Next()
-	/* if claims, ok := parsedToken.Claims.(jwt.MapClaims); ok && parsedToken.Valid {
-		//----> Access claims
-		name := claims["name"].(string)
-		email := claims["email"].(string)
-		role := claims["role"].(string)
-		userId := claims["userId"]
-
-		//----> Set the claims on gin context
-		c.Set("name", name)
-		c.Set("email", email)
-		c.Set("role", role)
-		c.Set("userId", userId)
-		c.Next()
-	} else {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail","message": "Invalid credential!", "statusCode": http.StatusUnauthorized})
-		return 
-	} */
-
+	
 }
 
 func getUserClaims(c *gin.Context, parsedToken jToken) error{

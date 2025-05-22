@@ -3,9 +3,7 @@ package models
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"time"
-
 	"github.com/alfredamos/go-meal-api/initializers"
 )
 
@@ -134,8 +132,6 @@ func shippingInfo(order Order) error{
 }
 
 func deliveryInfo(order Order) error{
-	fmt.Println("is-shipped : ", order.IsShipped)
-	fmt.Println("is-delivered : ", order.IsDelivered)
 	//----> Check if order is already deliver, then return.
 	if order.IsDelivered {
 		return errors.New("order has been delivered")
