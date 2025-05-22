@@ -25,7 +25,7 @@ func RolePermission(roles []string) gin.HandlerFunc{
 		//----> Check for role in roles slice.
 		isValidRole := utils.Contains(roles, roleToString)
 
-		//----> Check for valid role.
+		//----> Check for invalid role.
 		if  !isValidRole {
 			//----> Invalid role.
 			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"status": "fail","message": "You are not permitted to access this page or perform this function!", "statusCode": http.StatusForbidden})
