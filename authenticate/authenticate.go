@@ -18,7 +18,7 @@ func GenerateToken(name string, email string, userId uint, role string) (string,
 }
 
 func VerifyTokenJwt(c *gin.Context){
-	//----> Get the token from cookie.
+	//----> Get token from cookie.
 	token, err := getTokenFromCookie(c)
 
 	//----> Check for error.
@@ -27,7 +27,7 @@ func VerifyTokenJwt(c *gin.Context){
 		return 
 	}
 
-	//----> Parsed token and check validity.
+	//----> Validate token.
 	 parsedToken := validateToken(c, token)
 
 	 //----> Get user claims.
@@ -39,7 +39,7 @@ func VerifyTokenJwt(c *gin.Context){
 		return
 	}
 
-	//----> User authenticated.
+	//----> User is authenticated.
 	c.Next()
 	
 }

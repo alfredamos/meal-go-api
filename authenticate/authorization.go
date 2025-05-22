@@ -23,17 +23,18 @@ func RolePermission(roles []string) gin.HandlerFunc{
 		roleToString := fmt.Sprintf("%v", role)
 
 		//----> Check for role in roles slice.
-		result := utils.Contains(roles, roleToString)
+		isValidRole := utils.Contains(roles, roleToString)
 
 		//----> Check for valid role.
-		if  !result {
+		if  !isValidRole {
 			//----> Invalid role.
 			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"status": "fail","message": "You are not permitted to access this page or perform this function!", "statusCode": http.StatusForbidden})
 			return
-		}else if result{
-			//----> Valid role.
-			c.Next()
 		}
+			
+		//----> The role is valid, user is authorized.
+		c.Next()
+	
 	}
 }
 
