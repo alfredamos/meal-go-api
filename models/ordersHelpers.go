@@ -107,14 +107,14 @@ func deleteManyOrders(orders []Order) error{
 
 func shippingInfo(order Order) error{
 	//----> Check if order is already deliver, then return.
-	/* if order.IsDelivered {
+	if order.IsDelivered {
 		return errors.New("order is already delivered")
 	}
 
 	//----> Check if order is already deliver, then return
 	if order.IsShipped {
 		return errors.New("order has already been shipped")
-	} */
+	} 
 	//----> Update the order shipping info.
 	order.IsShipped = true //----> Order shipped.
 	order.IsPending = false //----> Order no longer pending.
