@@ -10,7 +10,7 @@ import (
 
 func CreatePizza(context *gin.Context) {
  //----> Get the type
- var pizza models.Pizza
+ pizza := models.Pizza{}
 
  //----> Get the request payload
  err := context.ShouldBindJSON(&pizza)
@@ -39,7 +39,7 @@ func CreatePizza(context *gin.Context) {
 
 func DeletePizzaById(context *gin.Context) {
 	//----> Get the type
- var pizza models.Pizza
+ pizza := models.Pizza{}
 
  //----> Get the id from params.
  idd := context.Param("id")
@@ -67,7 +67,7 @@ func DeletePizzaById(context *gin.Context) {
 
 func EditPizzaById(context *gin.Context) {
  //----> Get the type
- var pizza models.Pizza
+ pizza := models.Pizza{}
 
  //----> Get the id from params.
  idd := context.Param("id")
@@ -102,7 +102,7 @@ func EditPizzaById(context *gin.Context) {
 
 func GetAllPizza(context *gin.Context) {
 	//----> Get the type
-	var pizza models.Pizza
+	pizza := models.Pizza{}
 	
 	//----> Get all pizzas from database.
 	pizzas, err := pizza.GetAllPizzas()
@@ -120,7 +120,7 @@ func GetAllPizza(context *gin.Context) {
 
 func GetPizzaById(context *gin.Context) {
 	//----> Get the type
-	var pizza models.Pizza
+	pizza := models.Pizza{}
 	
 	//----> Get the id from params.
 	idd := context.Param("id")

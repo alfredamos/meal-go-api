@@ -14,7 +14,10 @@ func CalTotalPriceAndQuantity(carts Carts) (float64, float64) {
 
 	//----> Calculate the totalQuantity and totalPrice.
 	for _, value := range carts {
+		//----> Total quantity.
 		totalQuantity += value.Quantity
+
+		//----> Total price.
 		totalPrice += value.Quantity * value.Price
 	}
 
@@ -33,7 +36,7 @@ func makeOrder(carts []Cart, userId uint) Order {
 		TotalQuantity: totalQuantity,
 		TotalPrice:    totalPrice,
 		IsDelivered:   false,
-		IsPending:     false,
+		IsPending:     true,
 		IsShipped:     false,
 		Status:        "Pending",
 	}
@@ -44,7 +47,7 @@ func makeOrder(carts []Cart, userId uint) Order {
 func makeCart(carts []Cart, orderId uint) []CartItem {
 	newCarts := []CartItem{} //----> Cart variable.
 
-	//----> Make the cart-items
+	//----> Make the cart-items by composing cart-item struct.
 	for _, value := range carts {
 		newCart := CartItem{
 			Name:     value.Name,
@@ -54,6 +57,7 @@ func makeCart(carts []Cart, orderId uint) []CartItem {
 			OrderID:  orderId,
 			PizzaID:  value.PizzaId,
 		}
+
 		//----> Append newCart to newCarts.
 		newCarts = append(newCarts, newCart)
 	}
@@ -103,7 +107,7 @@ func deleteManyOrders(orders []Order) error{
 	return nil
 }
 
-func shippingInfo(order Order) error{
+func shippingInfo(order *Order) error{
 	//----> Check if order is already deliver, then return.
 	if order.IsDelivered {
 		return errors.New("order is already delivered")
@@ -131,7 +135,7 @@ func shippingInfo(order Order) error{
 	return nil
 }
 
-func deliveryInfo(order Order) error{
+func deliveryInfo(order *Order) error{
 	//----> Check if order is already deliver, then return.
 	if order.IsDelivered {
 		return errors.New("order has been delivered")

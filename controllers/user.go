@@ -3,14 +3,13 @@ package controllers
 import (
 	"net/http"
 	"strconv"
-
 	"github.com/alfredamos/go-meal-api/models"
 	"github.com/gin-gonic/gin"
 )
 
 func DeleteUserById(context *gin.Context) {
 	//----> Declare user type.
-	var user models.User
+	user := models.User{}
 
 	//----> Get the user id from param
 	idd := context.Param("id")
@@ -38,7 +37,7 @@ func DeleteUserById(context *gin.Context) {
 
 func GetAllUsers(context *gin.Context) {
 	//----> Declare user type.
-	var user models.User
+	user := models.User{}
 
 	//----> Retrieve the users from the database.
 	users, err := user.GetAllUsers()
@@ -55,7 +54,7 @@ func GetAllUsers(context *gin.Context) {
 
 func GetUserById(context *gin.Context) {
 	//----> Declare user type.
-	var user models.User
+	user := models.User{}
 
 	//----> Get the user id from param.
 	idd := context.Param("id")

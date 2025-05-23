@@ -13,7 +13,7 @@ type LoginModel struct {
 }
 
 func (loginModel *LoginModel) Login() (string, error) {
-	var user User //----> Declare user variable.
+	user := User{} //----> Declare user variable.
 	
 	//----> Check if the user email is attached to a genuine user.
 	email := loginModel.Email
@@ -53,7 +53,8 @@ type ChangePasswordModel struct {
 }
 
 func (changePasswordModel *ChangePasswordModel) ChangePassword() error {
-	var user User
+	user := User{} //----> Declare user variable.
+	
 	//----> Extract the email, oldPassword, newPassword and confirmPassword 
 	email := changePasswordModel.Email
 	oldPassword := changePasswordModel.OldPassword
@@ -132,8 +133,7 @@ type EditProfileModel struct {
 }
 
 func (editProfileModel *EditProfileModel) EditProfile() error {
-	//----> Declare the user variable.
-	var user User
+	user := User{} //----> Declare user variable.
 
 	//----> Check for the availability of user.
 	email := editProfileModel.Email
@@ -184,7 +184,8 @@ type SignupModel struct {
 }
 
 func (signup *SignupModel) Signup() error{
-	var user User
+	user := User{} //----> Declare user variable.
+	
 	//----> Check the matches of password and confirmPassword.
 	isMatchPassword := signup.Password == signup.ConfirmPassword
 	

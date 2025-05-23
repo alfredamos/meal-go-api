@@ -16,7 +16,7 @@ func OwnerAuthorize(userId uint, c *gin.Context) error {
 		if !exists {
 			return errors.New("you are not permitted to access this page or perform this function")
 		}
-
+	
 		//----> Convert userId to string
 		userIdStr := fmt.Sprintf("%v", userIdFromContext)
 		userIdInt, err := strconv.ParseUint(userIdStr, 10, 64)
@@ -28,19 +28,34 @@ func OwnerAuthorize(userId uint, c *gin.Context) error {
 
 		fmt.Println("User argument, userId : ", userId)
 		fmt.Println("User from context, userIdInt : ", userIdInt)
-
+		
 		//----> Convert to uint.
 		userIdUint := uint(userIdInt)
 
-		isEqual := isSame(userIdUint, userId)
-		
-		//----> Check for existence of role.
-		if !isEqual {
-			return errors.New("you are not permitted to access this page or perform this function")
+		//----> Check for equality of userId.
+		isSameUser := isSame(userIdUint, userId) 
+
+		//----> Get the user role.
+		role, err := getRoleFromContext(c)
+
+		//----> Check for error.
+		if err != nil{
+			return errors.New("role cannot be retrieved from context")
 		}
 
-		//----> User is the same you can continue.
-		return nil
+		//----> Check for passage criteria.
+		isAdmin := role == "Admin"
+
+		fmt.Println("isAdmin : ", isAdmin)
+		fmt.Println("isSameUser : ", isSameUser)
+
+		//----> Admin is allowed and same user is also allowed.
+		if isAdmin || isSameUser {
+			return nil
+		}
+
+		// You are not admin neither is same user, hence you are not allowed.
+		return errors.New("you are not permitted to access this page or perform this function")
 
 }
 

@@ -3,13 +3,12 @@ package controllers
 import (
 	"net/http"
 	"strconv"
-
 	"github.com/alfredamos/go-meal-api/models"
 	"github.com/gin-gonic/gin"
 )
 
 func CreateCartItem(context *gin.Context) {
-	var cartItem models.CartItem //----> CartItem variable
+	cartItem := models.CartItem{} //----> CartItem variable
 	
 	//----> Get the cart-item payload from the request.
 	err := context.ShouldBindJSON(&cartItem)
@@ -34,7 +33,7 @@ func CreateCartItem(context *gin.Context) {
 }
 
 func DeleteCartItemById(context *gin.Context) {
-	var cartItem models.CartItem //----> Cart-item variable.
+	cartItem := models.CartItem{} //----> Cart-item variable.
 	
 	//----> Get the id from param.
 	idd := context.Param("id")
@@ -60,7 +59,7 @@ func DeleteCartItemById(context *gin.Context) {
 }
 
 func EditCartItemById(context *gin.Context) {
-	var cartItem models.CartItem //----> Cart-item variable.
+	cartItem := models.CartItem{} //----> Cart-item variable.
 
 	//----> Get the id from param.
 	idd := context.Param("id")
@@ -95,7 +94,7 @@ func EditCartItemById(context *gin.Context) {
 }
 
 func GetAllCartItems(context *gin.Context) {
-	var cartItem models.CartItem //----> Cart-item variable.
+	cartItem := models.CartItem{} //----> Cart-item variable.
 
 	//----> Retrieve all the cart-items from database.
 	cartItems, err := cartItem.GetAllCartItems()
@@ -111,7 +110,7 @@ func GetAllCartItems(context *gin.Context) {
 }
 
 func GetCartItemById(context *gin.Context) {
-	var cartItem models.CartItem //----> Cart-item variable.
+	cartItem := models.CartItem{} //----> Cart-item variable.
 	
 	//----> Get the id from param.
 	idd := context.Param("id")

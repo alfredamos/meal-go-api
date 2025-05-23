@@ -28,7 +28,13 @@ func VerifyTokenJwt(c *gin.Context){
 	}
 
 	//----> Validate token.
-	 parsedToken := validateToken(c, token)
+	 parsedToken, err := validateToken(token)
+
+	 //----> Check for error.
+	 if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail","message": "Invalid credential!", "statusCode": http.StatusUnauthorized})
+		return
+	 }
 
 	 //----> Get user claims.
 	 err = getUserClaims(c, parsedToken)
@@ -59,18 +65,17 @@ func getUserClaims(c *gin.Context, parsedToken jToken) error{
 		c.Set("userId", userId)
 		c.Next()
 		return nil
-	} else {
-		return errors.New("invalid credentials")
-	}
+	} 
+
+	//----> User does not have claims.
+	return errors.New("invalid credentials")
 
 }
 
 func getTokenFromCookie(c *gin.Context) (string, error) {
 	token, err := c.Cookie("token")
 	if err != nil {
-			c.AbortWithStatus(http.StatusUnauthorized)
-			
-			return string(""), err
+			return string(""), errors.New("invalid credential")
 	}
 
 	return token, nil
@@ -79,7 +84,8 @@ func getTokenFromCookie(c *gin.Context) (string, error) {
 
 type jToken *jwt.Token
 
-func validateToken(c *gin.Context, token string) jToken{
+func validateToken(token string) (jToken, error){
+	//----> Parse token.
 	parsedToken, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error){
 		_, ok := token.Method.(*jwt.SigningMethodHMAC)
 		if !ok {
@@ -90,24 +96,26 @@ func validateToken(c *gin.Context, token string) jToken{
     return []byte(secretKey), nil
 	})
 
+	//----> Check for error.
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail","message": "Invalid credential!", "statusCode": http.StatusUnauthorized})
-		os.Exit(1)
+		return nil, errors.New("invalid credential")
 	}
 
+	//----> Check the validity of token.
 	isValidToken := parsedToken.Valid
 
+	//----> Check for error.
 	if !isValidToken {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail","message": "Invalid credential!", "statusCode": http.StatusUnauthorized})
-		os.Exit(1) 
+		return nil, errors.New("invalid credential")
 	}
 
-	return parsedToken
+	//----> Send back the parsed token.
+	return parsedToken, nil
 }
 
 func getRole(role string) string {
 	if role == "Admin" {
-		return "senior"
+		return "Admin"
 	}
 	if role == "Customer" {
 		return "Customer"

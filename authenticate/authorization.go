@@ -1,6 +1,7 @@
 package authenticate
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -11,19 +12,16 @@ import (
 func RolePermission(roles []string) gin.HandlerFunc{
 	return func(c *gin.Context){
 		//----> Get user role from context.
-		role, exists  := c.Get("role")
-		
-		//----> Check for existence of role.
-		if !exists {
+		role, err := getRoleFromContext(c)
+
+		//----> Check for error.
+		if err != nil{
 			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"status": "fail","message": "You are not permitted to access this page or perform this function!", "statusCode": http.StatusForbidden})
 			return
 		}
 
-		//----> Convert role to string
-		roleToString := fmt.Sprintf("%v", role)
-
 		//----> Check for role in roles slice.
-		isValidRole := utils.Contains(roles, roleToString)
+		isValidRole := utils.Contains(roles, role)
 
 		//----> Check for invalid role.
 		if  !isValidRole {
@@ -36,6 +34,23 @@ func RolePermission(roles []string) gin.HandlerFunc{
 		c.Next()
 	
 	}
+}
+
+func getRoleFromContext(c *gin.Context) (string, error){
+	//----> Get user role from context.
+	role, exists  := c.Get("role")
+		
+	//----> Check for existence of role.
+	if !exists {
+		return string(""), errors.New("you are not permitted to access this page or perform this function")
+	}
+
+	//----> Convert role to string
+	roleToString := fmt.Sprintf("%v", role)
+
+	//----> Send back the role.
+	return roleToString, nil
+
 }
 
 

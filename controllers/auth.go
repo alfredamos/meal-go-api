@@ -9,7 +9,7 @@ import (
 
 func ChangePasswordController(context *gin.Context){
 	//----> Get the type
-	var changePasswordModel models.ChangePasswordModel
+	changePasswordModel := models.ChangePasswordModel{}
 
 	//----> Get the request payload.
 	err := context.ShouldBindJSON(&changePasswordModel)
@@ -35,7 +35,7 @@ func ChangePasswordController(context *gin.Context){
 
 func EditProfileController(context *gin.Context){
 	//----> Get the type
-	var editProfileModel models.EditProfileModel
+	editProfileModel := models.EditProfileModel{}
 
 	//----> Get the request payload
 	err := context.ShouldBindJSON(&editProfileModel)
@@ -61,7 +61,7 @@ func EditProfileController(context *gin.Context){
 
 func LoginController(context *gin.Context) {
 	//----> Get the login-model type
-	var loginModel  models.LoginModel
+	loginModel := models.LoginModel{}
 
 	//----> Get the request payload
 	err := context.ShouldBindJSON(&loginModel)
@@ -98,7 +98,7 @@ func LogoutController(context *gin.Context){
 
 func SignupController(context *gin.Context){
 	//----> Get the type.
-	var signupModel models.SignupModel
+	signupModel := models.SignupModel{}
 
 	//----> Get the request payload
 	err := context.ShouldBindJSON(&signupModel)

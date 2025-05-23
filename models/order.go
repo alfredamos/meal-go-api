@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"errors"
 	"time"
-
 	"github.com/alfredamos/go-meal-api/initializers"
 	"gorm.io/gorm"
 )
@@ -141,9 +140,7 @@ func (*Order) GetAllOrdersByUserId(userId uint) ([]Order, error){
 	return orders, nil
 }
 
-func (*Order) GetOrderById(id uint) (Order, error){
-	order := Order{} //----> Order variable.
-
+func (order *Order) GetOrderById(id uint) (Order, error){
 	//----> retrieve the order with the given id from database.
 	err := initializers.DB.Model(&Order{}).Preload("CartItems").First(&order, id).Error
 
@@ -153,13 +150,10 @@ func (*Order) GetOrderById(id uint) (Order, error){
 	}
 
 	//----> Send back response.
-	return order, nil
+	return *order, nil
 }
 
-func (*Order) OrderDelivered(id uint) error{
-	//----> Order variable.
-	order := Order{}
-
+func (order *Order) OrderDelivered(id uint) error{
 	//----> Retrieve the order.
 	err := initializers.DB.First(&order, id).Error
 
@@ -180,10 +174,7 @@ func (*Order) OrderDelivered(id uint) error{
 	return nil
 }
 
-func (*Order) OrderShipped(id uint) error{
-	//----> Order variable.
-	order := Order{}
-
+func (order *Order) OrderShipped(id uint) error{
 	//----> Retrieve the order.
 	err := initializers.DB.First(&order, id).Error
 
@@ -222,7 +213,6 @@ type OrderPayload struct {
 }
 
 func (order *OrderPayload) CheckOutOrder() error{
-	
 	//----> Get the carts slice.
 	carts := order.Carts
 

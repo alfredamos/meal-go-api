@@ -3,7 +3,6 @@ package controllers
 import (
 	"net/http"
 	"strconv"
-
 	"github.com/alfredamos/go-meal-api/authenticate"
 	"github.com/alfredamos/go-meal-api/models"
 	"github.com/gin-gonic/gin"
@@ -11,7 +10,7 @@ import (
 
 func CheckOutOrder(context *gin.Context){
 	//----> Declare the type.
-	var order models.OrderPayload
+	order := models.OrderPayload{}
 	
 	//----> Get the request payload
 	err := context.ShouldBindJSON(&order)
@@ -32,7 +31,7 @@ func CheckOutOrder(context *gin.Context){
 
 func DeleteOrderById(context *gin.Context){
 	//----> Declare the type.
-	var order models.Order
+	order := models.Order{}
 
 	//----> The id from params.
 	idd:= context.Param("id")
@@ -53,7 +52,7 @@ func DeleteOrderById(context *gin.Context){
 
 func DeleteOrderByUserId(context *gin.Context){
 	//----> Declare the order type.
-	var order models.Order
+	order := models.Order{}
 
 	//----> Get the id from param.
 	userIdd := context.Param("userId")
@@ -89,7 +88,7 @@ func DeleteOrderByUserId(context *gin.Context){
 
 func DeleteAllOrders(context *gin.Context){
 	//----> Declare the order type.
-	var order models.Order
+	order := models.Order{}
 
 	//----> Delete all orders.
 	err := order.DeleteAllOrders()
@@ -106,7 +105,7 @@ func DeleteAllOrders(context *gin.Context){
 
 func GetAllOrders(context *gin.Context){
 	//----> declare the order type.
-	var order models.Order
+	order := models.Order{}
 
 	//----> Get all orders from the database.
 	orders, err := order.GetAllOrders()
@@ -123,7 +122,7 @@ func GetAllOrders(context *gin.Context){
 
 func GetAllOrderByUserId(context *gin.Context){
 	//----> declare the order variable.
-	var order models.Order
+	order := models.Order{}
 
 	//----> Get the user-id from param.
 	userIdd := context.Param("userId")
@@ -159,7 +158,7 @@ func GetAllOrderByUserId(context *gin.Context){
 
 func GetOrderById(context *gin.Context){
 	//----> declare the order variable.
-	var order models.Order
+	order := models.Order{}
 
 	//----> The id from params.
 	idd:= context.Param("id")
@@ -185,27 +184,27 @@ func GetOrderById(context *gin.Context){
 }
 
 func OrderDelivered(context *gin.Context){
-//----> declare the order variable.
-var order models.Order
+	//----> declare the order variable.
+	order := models.Order{}
 
-//----> Get the user-id from param.
-idd := context.Param("id")
-id, err := strconv.ParseUint(idd, 10, 32)
+	//----> Get the user-id from param.
+	idd := context.Param("id")
+	id, err := strconv.ParseUint(idd, 10, 32)
 
-//----> Check for error.
-if err != nil {
-	context.JSON(http.StatusBadRequest, gin.H{"message": "Please provide valid userId!"})
+	//----> Check for error.
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"message": "Please provide valid userId!"})
+		return
+	}
+
+	//----> Change the order status.
+	err = order.OrderDelivered(uint(id))
+
+	//----> Check for error.
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "Order is yet to be shipped or has already been deliver"})
 	return
-}
-
-//----> Change the order status.
-err = order.OrderDelivered(uint(id))
-
-//----> Check for error.
-if err != nil {
-	context.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "Order is yet to be shipped or has already been deliver"})
-	return
- }
+  }
 
  //----> Send back the response.
  context.JSON(http.StatusOK, gin.H{"status": "success", "message": "Order delivered successfully!"})
@@ -213,7 +212,7 @@ if err != nil {
 }
 func OrderShipped(context *gin.Context){
 	//----> declare the order variable.
-  var order models.Order
+	order := models.Order{}
 
  //----> Get the user-id from param.
  idd := context.Param("id")

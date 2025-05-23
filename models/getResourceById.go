@@ -2,13 +2,11 @@ package models
 
 import (
 	"errors"
-	"fmt"
-
 	"github.com/alfredamos/go-meal-api/initializers"
 )
 
 func cartItemGetById(id uint) (CartItem, error) {
-	var cartItem CartItem //----> Declaration.
+	cartItem := CartItem{} //----> Declaration.
 
 	//----> Retrieve the cart-item with given id from database.
 	err := initializers.DB.First(&cartItem, id).Error
@@ -23,7 +21,7 @@ func cartItemGetById(id uint) (CartItem, error) {
 }
 
 func pizzaGetById(id uint) (Pizza, error) {
-	var pizza Pizza //----> Pizza variable.
+	pizza := Pizza{} //----> Pizza variable.
 
 	//----> Retrieve the pizza with the given id from the database.
 	err := initializers.DB.First(&pizza, id).Error
@@ -38,7 +36,8 @@ func pizzaGetById(id uint) (Pizza, error) {
 }
 
 func userGetById(id uint) (User, error) {
-	var user User //----> User variable.
+	user := User{} //----> User variable.
+	
 	//----> Retrieve the user with the given id from the database.
  	err:= initializers.DB.Omit("Password").First(&user, id).Error
 
@@ -58,14 +57,17 @@ type CartL struct {
 func getAllCartItemsIds(carts []CartItem)[]CartItem{
 	cartItems := make([]CartItem, 0) //----> Slice of cart-ids
 	
+	//----> Get all the cart-items ids.
 	for _, cart := range carts {
+
+		//----> Compose the id from the cart-item struct.
 		cartItem := CartItem{ ID: cart.ID}
 
+		//----> Append all the ids together to have a slice of cart-item ids.
 		cartItems = append(cartItems, cartItem)
 
 	}
 
-	fmt.Println("cartsIds : ", cartItems)
-
+	//----> Send back the response
 	return cartItems
 }

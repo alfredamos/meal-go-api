@@ -1,8 +1,9 @@
 package authenticate
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func SetCookieHandler(c *gin.Context, token string) {
@@ -11,7 +12,7 @@ func SetCookieHandler(c *gin.Context, token string) {
 }
 
 func GetCookieHandler(c *gin.Context) {
-	cookie, err := c.Cookie("user")
+	cookie, err := c.Cookie("token")
 	if err != nil {
 			c.String(http.StatusNotFound, "Cookie not found")
 			return
