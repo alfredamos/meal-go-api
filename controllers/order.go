@@ -33,16 +33,16 @@ func DeleteOrderById(context *gin.Context){
 	//----> Declare the type.
 	order := models.Order{}
 
-	//----> The id from params.
-	idd:= context.Param("id")
-	id, errId:= strconv.ParseUint(idd, 10, 32)
+	//----> Get order id from params.
+	idd := context.Param("id")
+	id, err := strconv.ParseUint(idd, 10, 64)
 
 	//----> Check for error.
-	if errId != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": "Please provide a valid id!"})
+	if err != nil {
+		context.JSON(http.StatusOK, gin.H{"message": "Order-id couldn't be parsed!"})
 		return
 	}
-
+	
 	//----> Delete order with this id.
 	order.DeleteOrderById(uint(id))
 
@@ -54,17 +54,17 @@ func DeleteOrderByUserId(context *gin.Context){
 	//----> Declare the order type.
 	order := models.Order{}
 
-	//----> Get the id from param.
+	//----> Get the user-id from param.
 	userIdd := context.Param("userId")
-	userId, err := strconv.ParseUint(userIdd, 10, 32)
+	userId, err := strconv.ParseUint(userIdd, 10, 64)
 
 	//----> Check for error.
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": "Please provide valid id!"})
+		context.JSON(http.StatusOK, gin.H{"message": "User-id couldn't be parsed!"})
 		return
 	}
 
-	//----> Check for ownership permission
+	//----> Check for ownership permission or admin privilege.
 	err = authenticate.OwnerAuthorize(uint(userId), context)
 
 	//----> Check for ownership.
@@ -126,18 +126,18 @@ func GetAllOrderByUserId(context *gin.Context){
 
 	//----> Get the user-id from param.
 	userIdd := context.Param("userId")
-	userId, err := strconv.ParseUint(userIdd, 10, 32)
-	
-	//----> Check for error.
+	userId, err := strconv.ParseUint(userIdd, 10, 64)
+
+	//----> Check for parsing error.
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": "Please provide valid userId!"})
+		context.JSON(http.StatusForbidden, gin.H{"status": "fail", "message": "You are not permitted to view or perform any action on this page!"})
 		return
 	}
 
-	//----> Check for ownership permission
+	//----> Check for ownership permission or admin privilege.
 	err = authenticate.OwnerAuthorize(uint(userId), context)
 
-	//----> Check for ownership.
+	//----> Check for error.
 	if err != nil {
 		context.JSON(http.StatusForbidden, gin.H{"status": "fail", "message": "You are not permitted to view or perform any action on this page!"})
 		return
@@ -160,6 +160,15 @@ func GetOrderById(context *gin.Context){
 	//----> declare the order variable.
 	order := models.Order{}
 
+	//----> Check for ownership permission or admin privilege.
+	err := authenticate.OwnerAuthorize(order.UserID, context)
+
+	//----> Check for ownership.
+	if err != nil {
+		context.JSON(http.StatusForbidden, gin.H{"status": "fail", "message": "You are not permitted to view or perform any action on this page!"})
+		return
+	}
+
 	//----> The id from params.
 	idd:= context.Param("id")
 	id, err := strconv.ParseUint(idd, 10, 32)
@@ -170,7 +179,7 @@ func GetOrderById(context *gin.Context){
 		return
 	}
 
-	//----> Get all the orders by given user-id.
+	//----> Get order by order-id.
 	order, err = order.GetOrderById(uint(id))
 
 	//----> Check for error.
@@ -187,7 +196,7 @@ func OrderDelivered(context *gin.Context){
 	//----> declare the order variable.
 	order := models.Order{}
 
-	//----> Get the user-id from param.
+	//----> Get the order-id from param.
 	idd := context.Param("id")
 	id, err := strconv.ParseUint(idd, 10, 32)
 
@@ -214,7 +223,7 @@ func OrderShipped(context *gin.Context){
 	//----> declare the order variable.
 	order := models.Order{}
 
- //----> Get the user-id from param.
+ //----> Get the order-id from param.
  idd := context.Param("id")
  id, errUserId := strconv.ParseUint(idd, 10, 32)
 

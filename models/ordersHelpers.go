@@ -24,11 +24,11 @@ func CalTotalPriceAndQuantity(carts Carts) (float64, float64) {
 	return totalQuantity, totalPrice
 }
 
-func makeOrder(carts []Cart, userId uint) Order {
+func makeOrder(userId uint, carts []Cart) Order{
 	//----> Get the total quantity and total price.
 	totalQuantity, totalPrice := CalTotalPriceAndQuantity(carts)
 
-	//----> Make the order.
+	//----> Make order.
 	order := Order{
 		UserID:        userId,
 		PaymentId:     "2edklugr",
@@ -44,7 +44,7 @@ func makeOrder(carts []Cart, userId uint) Order {
 	return order
 }
 
-func makeCart(carts []Cart, orderId uint) []CartItem {
+func makeCartItems(carts []Cart, orderId uint) []CartItem {
 	newCarts := []CartItem{} //----> Cart variable.
 
 	//----> Make the cart-items by composing cart-item struct.
@@ -65,7 +65,7 @@ func makeCart(carts []Cart, orderId uint) []CartItem {
 	return newCarts
 }
 
-func deleteManyCartItems(carts []CartItem, id uint) error{
+func deleteManyCartItems(carts []CartItem) error{
 	//----> Get all the ids of the cart-items to be deleted.
 	cartItems := getAllCartItemsIds(carts)
 	
@@ -89,7 +89,7 @@ func deleteManyOrders(orders []Order) error{
 		allOrders  = append(allOrders , oneOrder) //----> orders-ids.
 
 		//----> Delete all cart-items associated with this order.
-		err := deleteManyCartItems(order.CartItems, order.ID)
+		err := deleteManyCartItems(order.CartItems)
 
 		if err != nil{
 			return errors.New("cart-items cannot be deleted")
@@ -113,10 +113,11 @@ func shippingInfo(order *Order) error{
 		return errors.New("order is already delivered")
 	}
 
-	//----> Check if order is already deliver, then return
+	//----> Check if order is already shipped, then return
 	if order.IsShipped {
 		return errors.New("order has already been shipped")
 	} 
+
 	//----> Update the order shipping info.
 	order.IsShipped = true //----> Order shipped.
 	order.IsPending = false //----> Order no longer pending.

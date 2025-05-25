@@ -19,22 +19,27 @@ func (loginModel *LoginModel) Login() (string, error) {
 	email := loginModel.Email
 	err := initializers.DB.Where("email = ?", email).First(&user).Error
 
-	//----> Record exist.
+	//----> Record does not exist.
 	if err != nil{		
 		return string(""), errors.New("invalid credentials")
 	}
 
 	//----> Check if the user-password is correct.
 	password := loginModel.Password
-	isValidPassword := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	isValidPasswordError := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	
 	//----> Check validity of password.
-	if isValidPassword != nil{
+	if isValidPasswordError != nil{
 		return string(""), errors.New("invalid credential")
 	}
 
+  userId := user.ID //----> User-id.
+	userRole := string(user.Role) //----> User-role.
+	userName := user.Name //----> User-name.
+	userEmail := user.Email //----> User-email
+
 	//----> Get token.
-	token, err := authenticate.GenerateToken(user.Name, user.Email,user.ID, string(user.Role))
+	token, err := authenticate.GenerateToken(userName, userEmail,userId, userRole)
 	
 	//----> Check for errors.
 	if err != nil {
@@ -62,7 +67,7 @@ func (changePasswordModel *ChangePasswordModel) ChangePassword() error {
 	confirmPassword := changePasswordModel.ConfirmPassword
 
 	//----> Compare the newPassword with confirmPassword, they must be equal.
-	isMatchPassword := newPassword == confirmPassword
+	isMatchPassword := matchPassword(newPassword, confirmPassword)
 
 	if !isMatchPassword{
 		return errors.New("passwords must match")
@@ -77,10 +82,10 @@ func (changePasswordModel *ChangePasswordModel) ChangePassword() error {
 	}
 
 	//----> Compare the old password with the one in the database, they must match.
-	isValidPassword := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(oldPassword))
+	isValidPasswordError := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(oldPassword))
 	
 	//----> Check validity of password.
-	if isValidPassword != nil{
+	if isValidPasswordError != nil{
 		return errors.New("invalid credential")
 	}
 
@@ -146,10 +151,10 @@ func (editProfileModel *EditProfileModel) EditProfile() error {
 
 	//----> Check for password validity.
 	password := editProfileModel.Password
-	isValidPassword := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	isValidPasswordError := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	
 	//----> Check validity of password.
-	if isValidPassword != nil{
+	if isValidPasswordError != nil{
 		return errors.New("invalid credential")
 	} 
 
@@ -187,9 +192,9 @@ func (signup *SignupModel) Signup() error{
 	user := User{} //----> Declare user variable.
 	
 	//----> Check the matches of password and confirmPassword.
-	isMatchPassword := signup.Password == signup.ConfirmPassword
+	isMatchPassword := matchPassword(signup.Password,signup.ConfirmPassword)
 	
-	//----> Check for error
+	//----> Check for error.
 	if !isMatchPassword{
 		return errors.New("passwords must match")
 	}
@@ -211,21 +216,32 @@ func (signup *SignupModel) Signup() error{
 	}
 
 	//----> Populate user.
-	user = User{
+	user = populateUser(*signup, string(hashedPassword))
+	
+	//----> Save the new user in the database.
+	initializers.DB.Create(&user)
+
+	//----> Send back the response.
+	return nil
+}
+
+func matchPassword(password, confirmPassword string) bool {
+	return password == confirmPassword
+}
+
+func populateUser(signup SignupModel, hashedPassword string) User{
+	//----> Populate user.
+	user := User{
 		Name: signup.Name,
 		Email: signup.Email,
 		Phone: signup.Phone,
 		Gender: signup.Gender,
 		Image: signup.Image,
 		Address: signup.Address,
-		//Role: "Customer",
-		Role: signup.Role,
-		Password: string(hashedPassword),
+		Role: "Customer",
+		//Role: signup.Role,
+		Password: hashedPassword,
 	}
 
-	//----> Save the new user in the database.
-	initializers.DB.Create(&user)
-
-	//----> Send back the response.
-	return nil
+	return user
 }

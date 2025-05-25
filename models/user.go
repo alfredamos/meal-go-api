@@ -2,14 +2,16 @@ package models
 
 import (
 	"errors"
-
+	"time"
 	"github.com/alfredamos/go-meal-api/initializers"
 	"gorm.io/gorm"
-	//"gorm.io/gorm"
 )
 
 type User struct {
-	gorm.Model
+	ID        uint `gorm:"primaryKey"`          
+  CreatedAt time.Time
+  UpdatedAt time.Time
+  DeletedAt gorm.DeletedAt `gorm:"index"`
 	Name     string `json:"name" binding:"required"`
 	Email    string `gorm:"unique" json:"email" binding:"required"`
 	Phone    string `json:"phone" binding:"required"`
@@ -25,7 +27,7 @@ type User struct {
 
 func (user *User) GetAllUsers() ([]User, error) {
 	//----> Declare slice of users.
-	var users []User
+	users := []User{}
 	
 	//----> Retrieve the users from the database.
 	err := initializers.DB.Omit("Password").Find(&users).Error
@@ -45,7 +47,7 @@ func (*User) GetUserById(id uint) (User, error) {
 
 	//----> Check for error.
 	if err != nil {
-		return User{}, errors.New("pizza cannot be retrieved")
+		return User{}, errors.New("user cannot be retrieved")
 	}
 
 	//----> Send back the response.

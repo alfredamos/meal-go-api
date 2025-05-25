@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,24 +15,23 @@ func OwnerAuthorize(userId uint, c *gin.Context) error {
 		if !exists {
 			return errors.New("you are not permitted to access this page or perform this function")
 		}
-	
-		//----> Convert userId to string
+
+		//----> Convert user-id from context to string and then to int.
 		userIdStr := fmt.Sprintf("%v", userIdFromContext)
 		userIdInt, err := strconv.ParseUint(userIdStr, 10, 64)
 
-		//----> Check for error.
+		//----> Check for parsing error.
 		if err != nil {
-			return errors.New("you are not permitted to access this page or perform this function")
+			return errors.New("user-id could not be parsed")
 		}
-
-		fmt.Println("User argument, userId : ", userId)
-		fmt.Println("User from context, userIdInt : ", userIdInt)
-		
-		//----> Convert to uint.
-		userIdUint := uint(userIdInt)
-
+	
 		//----> Check for equality of userId.
-		isSameUser := isSame(userIdUint, userId) 
+		isSameUser := isSame(uint(userIdInt), userId) 
+
+		//----> Same user allowed.
+		if isSameUser {
+			return nil
+		}
 
 		//----> Get the user role.
 		role, err := getRoleFromContext(c)
@@ -43,14 +41,11 @@ func OwnerAuthorize(userId uint, c *gin.Context) error {
 			return errors.New("role cannot be retrieved from context")
 		}
 
-		//----> Check for passage criteria.
+		//----> Check for admin role.
 		isAdmin := role == "Admin"
 
-		fmt.Println("isAdmin : ", isAdmin)
-		fmt.Println("isSameUser : ", isSameUser)
-
-		//----> Admin is allowed and same user is also allowed.
-		if isAdmin || isSameUser {
+		//----> Admin is allowed.
+		if isAdmin {
 			return nil
 		}
 
@@ -59,8 +54,8 @@ func OwnerAuthorize(userId uint, c *gin.Context) error {
 
 }
 
-
-func isSame(numb1, numb2 uint) bool{
-	return numb1 == numb2
+//----> Check for checking for same user.
+func isSame(userIdFromContext, userIdFromParam uint) bool{
+	return userIdFromContext == userIdFromParam
 }
 

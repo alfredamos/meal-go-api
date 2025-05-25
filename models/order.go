@@ -17,7 +17,7 @@ const (
 )
 
 type Order struct {
-	ID        uint           `gorm:"primaryKey"`
+	ID        uint `gorm:"primaryKey"`          
   CreatedAt time.Time
   UpdatedAt time.Time
   DeletedAt gorm.DeletedAt `gorm:"index"`
@@ -31,15 +31,15 @@ type Order struct {
 	IsPending bool `json:"isPending"`
 	IsDelivered bool `json:"isDelivered"`
 	Status Status `json:"status" binding:"required"`
-	UserID uint `json:"userId" binding:"required"`
+	UserID uint `gorm:"foreignKey:UserID" json:"userId" binding:"required"`
 	User User 
-	CartItems []CartItem `gorm:"foreignKey:OrderID"`
+	CartItems []CartItem `gorm:"foreignKey:OrderID;"`
 
 }
 
 func (order *Order) DeleteOrderById(id uint) error{
 	//----> Check to see if the order to be deleted is available in the database.
-	 err := initializers.DB.Model(&Order{}).Preload("CartItems").First(&order, id).Error
+	err := initializers.DB.Model(&Order{}).First(&order, id).Error
 
 	//----> Check for error.
 	if err != nil {
@@ -50,7 +50,7 @@ func (order *Order) DeleteOrderById(id uint) error{
 	carts := order.CartItems 
 
 	//----> Delete all the cart-items attached to order with the given id.
-	 err = deleteManyCartItems(carts, id)
+	 err = deleteManyCartItems(carts)
 
 	//----> Check for error.
 	if err != nil {
@@ -72,7 +72,8 @@ func (*Order) DeleteOrderByUserId(userId uint) error{
 	orders := []Order{} //----> Orders variable.
 
 	//----> Retrieve orders from database.
-	err := initializers.DB.Preload("CartItems").Find(&orders, Order{UserID: userId}).Error
+	err := initializers.DB.Find(&orders, Order{UserID: userId}).Error
+	
 	//----> Check for error.
 	if err != nil {
 		return errors.New("orders are not available in the database")
@@ -93,7 +94,8 @@ func (*Order) DeleteAllOrders() error{
 	orders := []Order{} //----> Orders variable.
 
 	//----> Retrieve orders from database.
-	err := initializers.DB.Preload("CartItems").Find(&orders).Error
+	err := initializers.DB.Find(&orders).Error
+	
 	//----> Check for error.
 	if err != nil {
 		return errors.New("orders are not available in the database")
@@ -129,7 +131,7 @@ func (*Order) GetAllOrdersByUserId(userId uint) ([]Order, error){
 	orders := []Order{} //----> Orders variable.
 
 	//----> Retrieve orders from database.
-	err := initializers.DB.Preload("CartItems").Find(&orders, Order{UserID: userId}).Error
+	err := initializers.DB.Preload("User").Preload("CartItems").Find(&orders, Order{UserID: userId}).Error
 	
 	//----> Check for error.
 	if err != nil {
@@ -142,7 +144,7 @@ func (*Order) GetAllOrdersByUserId(userId uint) ([]Order, error){
 
 func (order *Order) GetOrderById(id uint) (Order, error){
 	//----> retrieve the order with the given id from database.
-	err := initializers.DB.Model(&Order{}).Preload("CartItems").First(&order, id).Error
+	err := initializers.DB.Model(&Order{}).Preload("User").Preload("CartItems").First(&order, id).Error
 
 	//----> Check for error.
 	if err != nil {
@@ -196,12 +198,11 @@ func (order *Order) OrderShipped(id uint) error{
 }
 
 type Cart struct{
-	//ID uint
 	Name     string `json:"name"`
 	Price    float64 `json:"price"`
 	Quantity float64 `json:"quantity"`
 	Image    string `json:"image"`
-	PizzaId  uint `json:"pizzaId"`
+	PizzaId uint `json:"pizzaId"`
 	OrderId  uint `json:"orderId"`
 }
 
@@ -214,10 +215,11 @@ type OrderPayload struct {
 
 func (order *OrderPayload) CheckOutOrder() error{
 	//----> Get the carts slice.
-	carts := order.Carts
+	carts := order.Carts //----> Cart-items.
+	userId := order.UserId //----> User-id
 
 	//----> Make order struct.
-	orderPayload := makeOrder(carts, order.UserId)
+	orderPayload := makeOrder(userId, carts)
 
 	//----> Insert order in the database.
 	err := initializers.DB.Create(&orderPayload).Error
@@ -227,8 +229,11 @@ func (order *OrderPayload) CheckOutOrder() error{
 		return errors.New("order creation fails")
 	}
 
+	//----> Get the orderPayload-id
+  orderPayloadId := orderPayload.ID
+
 	//----> Make cart-items from cart-item struct.
-	cartItems := makeCart(carts, orderPayload.ID)
+	cartItems := makeCartItems(carts, orderPayloadId)
 
 	//----> Insert all the cart-items with the given order-id in the database.
 	err = initializers.DB.CreateInBatches(&cartItems, len(cartItems)).Error

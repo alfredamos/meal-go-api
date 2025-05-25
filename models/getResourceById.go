@@ -39,7 +39,7 @@ func userGetById(id uint) (User, error) {
 	user := User{} //----> User variable.
 	
 	//----> Retrieve the user with the given id from the database.
- 	err:= initializers.DB.Omit("Password").First(&user, id).Error
+	err := initializers.DB.Omit("Password").First(&user, id).Error
 
 	//----> Check for non existent user.
 	if err != nil {
@@ -50,16 +50,11 @@ func userGetById(id uint) (User, error) {
 	return user, nil
 }
 
-type CartL struct {
-	ID uint
-}
-
 func getAllCartItemsIds(carts []CartItem)[]CartItem{
 	cartItems := make([]CartItem, 0) //----> Slice of cart-ids
 	
 	//----> Get all the cart-items ids.
 	for _, cart := range carts {
-
 		//----> Compose the id from the cart-item struct.
 		cartItem := CartItem{ ID: cart.ID}
 

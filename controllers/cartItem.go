@@ -37,13 +37,14 @@ func DeleteCartItemById(context *gin.Context) {
 	
 	//----> Get the id from param.
 	idd := context.Param("id")
+	
 	id, err := strconv.ParseUint(idd, 10, 64)
 
 	//----> Check for error.
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "id cannot be parsed!", "statusCode": http.StatusBadRequest})
 		return
-	}
+	} 
 
 	//----> Delete the cart-item from the database.
 	err = cartItem.DeleteCartItemById(uint(id))
@@ -120,7 +121,7 @@ func GetCartItemById(context *gin.Context) {
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "id cannot be parsed!", "statusCode": http.StatusBadRequest})
 		return
-	}
+	} 
 
 	//----> Retrieve cart-item from database.
 	cartItem, err = cartItem.GetCartItemById(uint(id))

@@ -2,22 +2,24 @@ package models
 
 import (
 	"errors"
-
+	"time"
 	"github.com/alfredamos/go-meal-api/initializers"
 	"gorm.io/gorm"
 )
 
 
 type Pizza struct {
-	gorm.Model
+	ID        uint `gorm:"primaryKey"`          
+  CreatedAt time.Time
+  UpdatedAt time.Time
+  DeletedAt gorm.DeletedAt `gorm:"index"`
 	Name        string `json:"name" binding:"required"`
 	Topping     string `json:"topping" binding:"required"`
 	Price       float64 `json:"price" binding:"required"`
 	Quantity    float64 `json:"quantity" binding:"required"`
 	Image       string `json:"image" binding:"required"`
 	Description string `json:"description" binding:"required"`
-	UserID      uint `json:"userId" binding:"required"`
-	//User User 
+	UserID      uint `gorm:"foreignKey:UserID;size:191" json:"userId" binding:"required"`
 }
 
 func (pizza *Pizza) CreatePizza() error{
@@ -77,10 +79,9 @@ func (pizza *Pizza) EditPizzaId(id uint) error{
 }
 
 func (*Pizza) GetAllPizzas() ([]Pizza, error){
-	var pizzas []Pizza //----> Pizza variable.
+	pizzas := []Pizza{} //----> Pizza variable.
 
 	//----> Retrieve pizzas from database.
-	//result := initializers.DB.Omit("Password").Joins("User").Find(&pizzas)
 	err := initializers.DB.Find(&pizzas).Error
 
 	//----> Check for error.

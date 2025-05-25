@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"os"
 	"time"
-
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -23,7 +22,7 @@ func VerifyTokenJwt(c *gin.Context){
 
 	//----> Check for error.
 	if err != nil{
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail","message": "Invalid credential!", "statusCode": http.StatusUnauthorized})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"status": "fail","message": "Invalid token!", "statusCode": http.StatusUnauthorized})
 		return 
 	}
 
@@ -113,12 +112,3 @@ func validateToken(token string) (jToken, error){
 	return parsedToken, nil
 }
 
-func getRole(role string) string {
-	if role == "Admin" {
-		return "Admin"
-	}
-	if role == "Customer" {
-		return "Customer"
-	}
-	return "Staff"
-}

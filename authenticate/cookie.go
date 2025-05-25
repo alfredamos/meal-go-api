@@ -2,7 +2,6 @@ package authenticate
 
 import (
 	"net/http"
-
 	"github.com/gin-gonic/gin"
 )
 

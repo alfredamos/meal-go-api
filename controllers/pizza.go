@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 	"github.com/alfredamos/go-meal-api/models"
@@ -14,8 +13,6 @@ func CreatePizza(context *gin.Context) {
 
  //----> Get the request payload
  err := context.ShouldBindJSON(&pizza)
-
- fmt.Println("error in create-pizza, error : ", err)
 
  //----> Check for error.
  if err != nil {
@@ -41,7 +38,7 @@ func DeletePizzaById(context *gin.Context) {
 	//----> Get the type
  pizza := models.Pizza{}
 
- //----> Get the id from params.
+ //----> Get the pizza-id from params.
  idd := context.Param("id")
  id, err := strconv.ParseUint(idd, 10, 32)
 
@@ -50,7 +47,7 @@ func DeletePizzaById(context *gin.Context) {
 	context.JSON(http.StatusBadRequest, gin.H{"message": "Please provide a valid id!"})
 	return
  }
-
+ 
  //----> Delete pizza with this id from the database.
  err = pizza.DeletePizzaById(uint(id))
 
@@ -69,16 +66,16 @@ func EditPizzaById(context *gin.Context) {
  //----> Get the type
  pizza := models.Pizza{}
 
- //----> Get the id from params.
+ //----> Get the pizza-id from params.
  idd := context.Param("id")
  id, err := strconv.ParseUint(idd, 10, 32)
 
- //----> Check for error
+ //----> Check for error.
  if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "Please provide a valid id!"})
 		return
 	}
-
+ 
  //----> Get the request payload
  err = context.ShouldBindJSON(&pizza)
 
@@ -107,8 +104,7 @@ func GetAllPizza(context *gin.Context) {
 	//----> Get all pizzas from database.
 	pizzas, err := pizza.GetAllPizzas()
 
-	fmt.Println("Error in get-all-pizza, err : ", err)
-
+	//----> Check for error.
 	if err != nil {
 		context.JSON(http.StatusNotFound, gin.H{"message": "Pizzas cannot be retrieved from database!"})
 		return
@@ -122,16 +118,16 @@ func GetPizzaById(context *gin.Context) {
 	//----> Get the type
 	pizza := models.Pizza{}
 	
-	//----> Get the id from params.
+	//----> Get the pizza-id from params.
 	idd := context.Param("id")
-	id, err:= strconv.ParseUint(idd, 10, 32)
+  id, err:= strconv.ParseUint(idd, 10, 32)
 
  //----> Check for error
  if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "Please provide a valid id!"})
 		return
  }
-
+ 
  //----> Get pizza with this id from database.
  pizza, err = pizza.GetPizzaById(uint(id))
 

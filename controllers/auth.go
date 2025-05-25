@@ -14,7 +14,7 @@ func ChangePasswordController(context *gin.Context){
 	//----> Get the request payload.
 	err := context.ShouldBindJSON(&changePasswordModel)
 
-	//----> Check for error
+	//----> Check for error.
 	if err != nil{
 		context.JSON(http.StatusBadRequest, gin.H{"message": "Invalid credentials!"})
 		return
@@ -48,6 +48,7 @@ func EditProfileController(context *gin.Context){
 
 	//----> Save the changed profiles into the database.
 	err = editProfileModel.EditProfile()
+	
 	//----> Check for error.
 	if err != nil {
 		context.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid credentials!"})
@@ -72,7 +73,7 @@ func LoginController(context *gin.Context) {
 		return
 	}
 
-	//----> Login
+	//----> Login in the user.
 	token, err := loginModel.Login()
 
 	//----> Check for errors.
@@ -103,7 +104,7 @@ func SignupController(context *gin.Context){
 	//----> Get the request payload
 	err := context.ShouldBindJSON(&signupModel)
 	
-	//----> Check for error
+	//----> Check for error.
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "Please provide all values!"})
 		return

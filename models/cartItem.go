@@ -3,15 +3,12 @@ package models
 import (
 	"errors"
 	"time"
-
 	"github.com/alfredamos/go-meal-api/initializers"
 	"gorm.io/gorm"
 )
 
-
-
 type CartItem struct {
-	ID        uint           `gorm:"primaryKey"`
+	ID        uint `gorm:"primaryKey"`          
   CreatedAt time.Time
   UpdatedAt time.Time
   DeletedAt gorm.DeletedAt `gorm:"index"`
@@ -19,9 +16,9 @@ type CartItem struct {
 	Price    float64 `json:"price" binding:"required"`
 	Quantity float64 `json:"quantity" binding:"required"`
 	Image    string `json:"image" binding:"required"`
-	OrderID  uint `json:"orderId"`
+	OrderID  uint `gorm:"foreignKey:OrderID" json:"orderId"`
 	Order Order 
-	PizzaID  uint `json:"pizzaId" binding:"required"`
+	PizzaID  uint `gorm:"foreignKey:PizzaID" json:"pizzaId" binding:"required"`
 	Pizza Pizza 
 }
 
@@ -81,7 +78,7 @@ func (cartItem *CartItem) EditCartItemId(id uint) error{
 }
 
 func (*CartItem) GetAllCartItems() ([]CartItem, error){
-	var cartItems []CartItem //----> Declaration.
+	cartItems := []CartItem{} //----> Declaration.
 
 	//----> Retrieve the cart-items from the database.
 	err := initializers.DB.Find(&cartItems).Error

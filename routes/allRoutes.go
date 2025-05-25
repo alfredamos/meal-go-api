@@ -8,9 +8,6 @@ import (
 
 
 func RegisteredRoutes(server *gin.Engine){
-	//----> Role related permitted argument.
-	list := make([]string, 0)
-
 	//----> Unprotected routes.
 	//----> Auth-routes.
 	server.POST("/auth/signup", controllers.SignupController)
@@ -21,11 +18,6 @@ func RegisteredRoutes(server *gin.Engine){
 
 	//----> Apply middleware for protected routes
 	r := server.Use(authenticate.VerifyTokenJwt)
-
-	//----> Admin role permitted routes middleware.
-	list = append(list, "Admin")
-	p := server.Use(authenticate.VerifyTokenJwt, authenticate.RolePermission(list))
-
 
 	//----> Protected routes.
 	//----> Auth routes.
@@ -51,6 +43,11 @@ func RegisteredRoutes(server *gin.Engine){
 	//----> Pizza-routes.
 	r.GET("/pizzas/:id", controllers.GetPizzaById)
 
+	//----> User-route
+	r.GET("/users/:id", controllers.GetUserById)
+
+	//----> Admin role permitted routes middleware.
+	p := server.Use(authenticate.VerifyTokenJwt, authenticate.RolePermission("Admin"))
 	
 	//----> Orders routes.
 	p.GET("/orders", controllers.GetAllOrders)
@@ -62,8 +59,8 @@ func RegisteredRoutes(server *gin.Engine){
 	p.POST("/pizzas", controllers.CreatePizza)
 	p.DELETE("/pizzas/:id", controllers.DeletePizzaById)
 	p.PATCH("/pizzas/:id", controllers.EditPizzaById)
+	
 	//----> User routes.
 	p.GET("/users", controllers.GetAllUsers)
-	p.GET("/users/:id", controllers.GetUserById)
 	p.DELETE("/users/:id", controllers.DeleteUserById)
 }

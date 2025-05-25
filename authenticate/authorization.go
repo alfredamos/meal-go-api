@@ -4,12 +4,11 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm/utils"
 )
 
-func RolePermission(roles []string) gin.HandlerFunc{
+func RolePermission(roles ...string) gin.HandlerFunc{
 	return func(c *gin.Context){
 		//----> Get user role from context.
 		role, err := getRoleFromContext(c)

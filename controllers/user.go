@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 	"strconv"
+	"github.com/alfredamos/go-meal-api/authenticate"
 	"github.com/alfredamos/go-meal-api/models"
 	"github.com/gin-gonic/gin"
 )
@@ -13,16 +14,16 @@ func DeleteUserById(context *gin.Context) {
 
 	//----> Get the user id from param
 	idd := context.Param("id")
-	id, errId := strconv.ParseUint(idd, 10, 32)
+	id, err:= strconv.ParseUint(idd, 10, 32)
 
-	//----> Check the error.
-	if errId != nil {
+ //----> Check for error
+ if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "Please provide a valid id!"})
 		return
-	}
-
-	//----> Retrieve the pizza with the given id from database.
-	err := user.DeleteUserById(uint(id))
+ }
+	
+	//----> Retrieve the user with the given id from database.
+	err = user.DeleteUserById(uint(id))
 
 	//----> Check if the user exist.
 	if err != nil{
@@ -58,16 +59,25 @@ func GetUserById(context *gin.Context) {
 
 	//----> Get the user id from param.
 	idd := context.Param("id")
-	id, errId := strconv.ParseUint(idd, 10, 32)
+	id, err:= strconv.ParseUint(idd, 10, 32)
 
-	//----> Check for error
-	if errId != nil {
+ //----> Check for error
+ if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "Please provide a valid id!"})
+		return
+ }
+	
+	//----> Check for ownership permission
+	err = authenticate.OwnerAuthorize(uint(id), context)
+
+	//----> Check for ownership.
+	if err != nil {
+		context.JSON(http.StatusForbidden, gin.H{"status": "fail", "message": "You are not permitted to view or perform any action on this page!"})
 		return
 	}
 
 	//----> Get the user with the given id from database.
-	user, err := user.GetUserById(uint(id))
+	user, err = user.GetUserById(uint(id))
 
 	//----> Check if the user exist.
 	if err != nil{
