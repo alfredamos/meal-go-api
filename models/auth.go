@@ -12,7 +12,7 @@ type LoginModel struct {
 	Password string `json:"password" binding:"required"`
 }
 
-func (loginModel *LoginModel) Login() (string, error) {
+func (loginModel *LoginModel) Login() (LoginResp, error) {
 	user := User{} //----> Declare user variable.
 	
 	//----> Check if the user email is attached to a genuine user.
@@ -21,7 +21,7 @@ func (loginModel *LoginModel) Login() (string, error) {
 
 	//----> Record does not exist.
 	if err != nil{		
-		return string(""), errors.New("invalid credentials")
+		return LoginResp{}, errors.New("invalid credentials")
 	}
 
 	//----> Check if the user-password is correct.
@@ -30,7 +30,7 @@ func (loginModel *LoginModel) Login() (string, error) {
 	
 	//----> Check validity of password.
 	if isValidPasswordError != nil{
-		return string(""), errors.New("invalid credential")
+		return LoginResp{}, errors.New("invalid credential")
 	}
 
   userId := user.ID //----> User-id.
@@ -43,11 +43,13 @@ func (loginModel *LoginModel) Login() (string, error) {
 	
 	//----> Check for errors.
 	if err != nil {
-		return string(""), errors.New("invalid credential")
+		return LoginResp{}, errors.New("invalid credential")
 	}
-	
+
+	loginResp := makeLoginResp(token, user)
+
 	//----> send back the response
-	return token, nil
+	return loginResp, nil
 }
 
 type ChangePasswordModel struct {

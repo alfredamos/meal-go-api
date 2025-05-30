@@ -2,12 +2,13 @@ package authenticate
 
 import (
 	"net/http"
+
 	"github.com/gin-gonic/gin"
 )
 
 func SetCookieHandler(c *gin.Context, token string) {
 	c.SetCookie("token", token, 3600, "/", "localhost", false, true)
-	c.String(http.StatusOK, "Cookie has been set")
+	//c.String(http.StatusOK, "Cookie has been set")
 }
 
 func GetCookieHandler(c *gin.Context) {
@@ -21,5 +22,5 @@ func GetCookieHandler(c *gin.Context) {
 
 func DeleteCookieHandler(c *gin.Context) {
 	c.SetCookie("token", "", -1, "/", "localhost", false, true)
-	c.String(http.StatusOK, "Cookie has been deleted")
+	//c.String(http.StatusOK, "Cookie has been deleted")
 }

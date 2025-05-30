@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 	"strconv"
+
 	"github.com/alfredamos/go-meal-api/authenticate"
 	"github.com/alfredamos/go-meal-api/models"
 	"github.com/gin-gonic/gin"
@@ -32,7 +33,7 @@ func DeleteUserById(context *gin.Context) {
 	}
 
 	//----> Send back the response
-	context.JSON(http.StatusOK, gin.H{"message": "User is deleted successfully!"})
+	context.JSON(http.StatusNoContent, gin.H{"status": "success", "message": "User has been deleted successfully!", "statusCode": http.StatusNoContent})
 
 }
 
@@ -50,7 +51,7 @@ func GetAllUsers(context *gin.Context) {
 	}
 
 	//----> Send back the response.
-	context.JSON(http.StatusOK, gin.H{"message": "Users are retrieve successfully!", "users": users})
+	context.JSON(http.StatusOK, users)
 }
 
 func GetUserById(context *gin.Context) {
@@ -86,5 +87,5 @@ func GetUserById(context *gin.Context) {
 	}
 
 	//----> Send back the response
-	context.JSON(http.StatusOK, gin.H{"message": "The user is retrieved successfully!", "user": user})
+	context.JSON(http.StatusOK, user)
 }

@@ -17,14 +17,14 @@ const (
 )
 
 type Order struct {
-	ID        uint `gorm:"primaryKey"`          
+	ID        uint `gorm:"primaryKey" json:"id"`          
   CreatedAt time.Time
   UpdatedAt time.Time
   DeletedAt gorm.DeletedAt `gorm:"index"`
 	PaymentId string `json:"paymentId"`
 	OrderDate time.Time `json:"orderDate"`
-	ShippingDate sql.NullTime `gorm:"type:TIMESTAMP NULL"`
-	DeliveryDate sql.NullTime `gorm:"type:TIMESTAMP NULL"`
+	ShippingDate sql.NullTime `gorm:"type:TIMESTAMP NULL" json:"shippingDate"`
+	DeliveryDate sql.NullTime `gorm:"type:TIMESTAMP NULL" json:"deliveryDate"`
 	TotalQuantity float64 `json:"totalQuantity"`
 	TotalPrice float64 `json:"totalPrice"`
 	IsShipped bool `json:"isShipped"`
@@ -155,46 +155,46 @@ func (order *Order) GetOrderById(id uint) (Order, error){
 	return *order, nil
 }
 
-func (order *Order) OrderDelivered(id uint) error{
+func (order *Order) OrderDelivered(id uint) (Order, error){
 	//----> Retrieve the order.
 	err := initializers.DB.First(&order, id).Error
 
 	//----> Check for error.
 	if err != nil {
-		return errors.New("order cannot be found")
+		return Order{}, errors.New("order cannot be found")
 	}
 
 	//----> Update the shipping info.
-	err = deliveryInfo(order)
+	orderEdited , err := deliveryInfo(order)
 
 	//----> Check for error.
 	if err != nil{
-		return errors.New("delivery info cannot be changed")
+		return Order{}, errors.New("delivery info cannot be changed")
 	}
 
 	//----> send back the response.
-	return nil
+	return orderEdited, nil
 }
 
-func (order *Order) OrderShipped(id uint) error{
+func (order *Order) OrderShipped(id uint) (Order, error){
 	//----> Retrieve the order.
 	err := initializers.DB.First(&order, id).Error
 
 	//----> Check for error.
 	if err != nil {
-		return errors.New("order cannot be found")
+		return Order{}, errors.New("order cannot be found")
 	}
 
 	//----> Update the shipping info.
-	err = shippingInfo(order)
+	orderEdited, err := shippingInfo(order)
 
 	//----> Check for error.
 	if err != nil{
-		return errors.New("shipping info cannot be changed")
+		return Order{}, errors.New("shipping info cannot be changed")
 	}
 
 	//----> send back the response.
-	return nil
+	return orderEdited, nil
 }
 
 type Cart struct{

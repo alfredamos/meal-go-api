@@ -107,15 +107,15 @@ func deleteManyOrders(orders []Order) error{
 	return nil
 }
 
-func shippingInfo(order *Order) error{
+func shippingInfo(order *Order) (Order, error){
 	//----> Check if order is already deliver, then return.
 	if order.IsDelivered {
-		return errors.New("order is already delivered")
+		return Order{}, errors.New("order is already delivered")
 	}
 
 	//----> Check if order is already shipped, then return
 	if order.IsShipped {
-		return errors.New("order has already been shipped")
+		return Order{}, errors.New("order has already been shipped")
 	} 
 
 	//----> Update the order shipping info.
@@ -129,22 +129,22 @@ func shippingInfo(order *Order) error{
 
 	//----> Check for error.
 	if err != nil {
-		return errors.New("order shipping info cannot be saved")
+		return Order{}, errors.New("order shipping info cannot be saved")
 	}
 
 	//----> Send back response.
-	return nil
+	return *order, nil
 }
 
-func deliveryInfo(order *Order) error{
+func deliveryInfo(order *Order) (Order, error){
 	//----> Check if order is already deliver, then return.
 	if order.IsDelivered {
-		return errors.New("order has been delivered")
+		return Order{}, errors.New("order has been delivered")
 	}
 
 	//----> Check if order has been shipped, if not return as order must be shipped before delivery.
 	if !order.IsShipped {
-		return errors.New("order is yet to be shipped")
+		return Order{}, errors.New("order is yet to be shipped")
 	}
 
 	//----> Update the order delivery info.
@@ -157,9 +157,9 @@ func deliveryInfo(order *Order) error{
 
 	//----> Check for error.
 	if err != nil {
-		return errors.New("order shipping info cannot be saved")
+		return Order{}, errors.New("order shipping info cannot be saved")
 	}
 
 	//----> Send back response.
-	return nil
+	return *order, nil
 }

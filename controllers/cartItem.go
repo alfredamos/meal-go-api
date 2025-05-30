@@ -56,7 +56,7 @@ func DeleteCartItemById(context *gin.Context) {
 	}
 
 	//----> Send back the response.
-	context.JSON(http.StatusOK, gin.H{"status": "success", "message": "Cart-item deleted successfully!", "statusCode": http.StatusOK})
+	context.JSON(http.StatusNoContent, gin.H{"status": "Success", "message": "Cart-item has been deleted successfully!", "statusCode": http.StatusNoContent})
 }
 
 func EditCartItemById(context *gin.Context) {
@@ -91,7 +91,7 @@ func EditCartItemById(context *gin.Context) {
 	}
 
 	//----> send back the response.
-	context.JSON(http.StatusOK, gin.H{"status": "success", "message": "Cart-item edited successful!", "statusCode": http.StatusOK})
+	context.JSON(http.StatusNoContent, gin.H{"status": "Success", "message": "Cart-item has been edited successfully!", "statusCode": http.StatusNoContent})
 }
 
 func GetAllCartItems(context *gin.Context) {
@@ -107,7 +107,7 @@ func GetAllCartItems(context *gin.Context) {
 	}
 
 	//----> send back response.
-	context.JSON(http.StatusOK, gin.H{"status": "success", "message": "Cart-items retrieved successfully", "statusCode": http.StatusOK, "cartItems": cartItems})
+	context.JSON(http.StatusOK, cartItems)
 }
 
 func GetCartItemById(context *gin.Context) {
@@ -133,5 +133,5 @@ func GetCartItemById(context *gin.Context) {
 	}
 
 	//----> send back the response.
-	context.JSON(http.StatusOK, gin.H{"status": "success", "message": "Cart-item is retrieved successfully!", "statusCode": http.StatusOK, "cartItem": cartItem})
+	context.JSON(http.StatusOK, cartItem)
 }

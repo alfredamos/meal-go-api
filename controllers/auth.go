@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+
 	"github.com/alfredamos/go-meal-api/authenticate"
 	"github.com/alfredamos/go-meal-api/models"
 	"github.com/gin-gonic/gin"
@@ -29,7 +30,7 @@ func ChangePasswordController(context *gin.Context){
 	}
 
 	//----> Send back the response.
-	context.JSON(http.StatusOK, gin.H{"message": "Password has been changed successfully!"})
+	context.JSON(http.StatusOK, gin.H{"status": "success","message": "Password has been changed successfully!", "statusCode": http.StatusOK})
 }
 
 
@@ -56,7 +57,7 @@ func EditProfileController(context *gin.Context){
 	}
 
 	//----> Send back the response
-	context.JSON(http.StatusOK, gin.H{"message": "Profile has been changed successfully!"})
+	context.JSON(http.StatusOK, gin.H{"status": "success","message": "Profile has been changed successfully!", "statusCode": http.StatusOK})
 }
 
 
@@ -74,7 +75,7 @@ func LoginController(context *gin.Context) {
 	}
 
 	//----> Login in the user.
-	token, err := loginModel.Login()
+	loginResp, err := loginModel.Login()
 
 	//----> Check for errors.
 	if err != nil {
@@ -83,10 +84,10 @@ func LoginController(context *gin.Context) {
 	}
 
 	//----> Set cookie.
-	authenticate.SetCookieHandler(context, token)
+	authenticate.SetCookieHandler(context, loginResp.Token)
 	
 	//----> Send back response.
-	context.JSON(http.StatusOK, gin.H{"status": "success", "message": "Login is successful!", "token": token})
+	context.JSON(http.StatusOK, loginResp)
 }
 
 func LogoutController(context *gin.Context){
@@ -94,7 +95,7 @@ func LogoutController(context *gin.Context){
 	authenticate.DeleteCookieHandler(context)
 
 	//----> Send back the response.
-	context.JSON(http.StatusOK, gin.H{"status": "success", "message": "Logout is successful!"})
+	context.JSON(http.StatusOK, gin.H{"status": "success","message": "Logout is successfully!", "statusCode": http.StatusOK})
 }
 
 func SignupController(context *gin.Context){
@@ -120,5 +121,5 @@ func SignupController(context *gin.Context){
 	}
 
 	//----> Send back the response.
-	context.JSON(http.StatusCreated, gin.H{"message": "Signup is successful"})
+	context.JSON(http.StatusCreated, gin.H{"status": "success","message": "Signup is successfully!", "statusCode": http.StatusOK})
 }

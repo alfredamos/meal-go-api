@@ -3,13 +3,14 @@ package models
 import (
 	"errors"
 	"time"
+
 	"github.com/alfredamos/go-meal-api/initializers"
 	"gorm.io/gorm"
 )
 
 
 type Pizza struct {
-	ID        uint `gorm:"primaryKey"`          
+	ID        uint `gorm:"primaryKey" json:"id"`          
   CreatedAt time.Time
   UpdatedAt time.Time
   DeletedAt gorm.DeletedAt `gorm:"index"`

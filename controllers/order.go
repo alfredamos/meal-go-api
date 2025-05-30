@@ -25,7 +25,7 @@ func CheckOutOrder(context *gin.Context){
 	order.CheckOutOrder()
 
 	//----> send back the response
-	context.JSON(http.StatusCreated, gin.H{"message": "Order created successfully"})
+	context.JSON(http.StatusCreated, gin.H{"status": "Success", "message": "Order has been created successfully!", "statusCode": http.StatusCreated})
 
 }
 
@@ -47,7 +47,7 @@ func DeleteOrderById(context *gin.Context){
 	order.DeleteOrderById(uint(id))
 
 	//----> Send back the response.
-	context.JSON(http.StatusOK, gin.H{"message": "Order deleted successfully!"})
+	context.JSON(http.StatusNoContent, gin.H{"status": "Success", "message": "Order has been deleted successfully!", "statusCode": http.StatusNoContent})
 }
 
 func DeleteOrderByUserId(context *gin.Context){
@@ -83,7 +83,7 @@ func DeleteOrderByUserId(context *gin.Context){
 	}
 
 	//----> Send back the response.
-	context.JSON(http.StatusOK, gin.H{"message": "orders deleted by userId successfully!"})
+	context.JSON(http.StatusNoContent, gin.H{"status": "Success", "message": "Order has been deleted successfully!", "statusCode": http.StatusNoContent})
 }
 
 func DeleteAllOrders(context *gin.Context){
@@ -100,7 +100,7 @@ func DeleteAllOrders(context *gin.Context){
 	}
 
 	//----> Send back the response.
-	context.JSON(http.StatusOK, gin.H{"message": "orders deleted successfully!"})
+	context.JSON(http.StatusNoContent, gin.H{"status": "Success", "message": "Order has been deleted successfully!", "statusCode": http.StatusNoContent})
 }
 
 func GetAllOrders(context *gin.Context){
@@ -117,7 +117,7 @@ func GetAllOrders(context *gin.Context){
 	}
 
 	//----> Send back the response.
-	context.JSON(http.StatusOK, gin.H{"status": "success" , "message": "Orders are retrieved successfully!", "orders": orders})
+	context.JSON(http.StatusOK, orders)
 }
 
 func GetAllOrderByUserId(context *gin.Context){
@@ -153,7 +153,7 @@ func GetAllOrderByUserId(context *gin.Context){
 	}
 
 	//----> Send back the response.
-	context.JSON(http.StatusOK, gin.H{"status": "success" , "message": "Orders are retrieved successfully!", "orders": orders})
+	context.JSON(http.StatusOK, orders)
 }
 
 func GetOrderById(context *gin.Context){
@@ -189,7 +189,7 @@ func GetOrderById(context *gin.Context){
 	}
 
 	//----> Send back the response.
-	context.JSON(http.StatusOK, gin.H{"status": "success" , "message": "Orders are retrieved successfully!", "order": order})
+	context.JSON(http.StatusOK, order)
 }
 
 func OrderDelivered(context *gin.Context){
@@ -207,7 +207,7 @@ func OrderDelivered(context *gin.Context){
 	}
 
 	//----> Change the order status.
-	err = order.OrderDelivered(uint(id))
+	orderEdited, err := order.OrderDelivered(uint(id))
 
 	//----> Check for error.
 	if err != nil {
@@ -216,7 +216,7 @@ func OrderDelivered(context *gin.Context){
   }
 
  //----> Send back the response.
- context.JSON(http.StatusOK, gin.H{"status": "success", "message": "Order delivered successfully!"})
+ context.JSON(http.StatusOK, orderEdited)
 
 }
 func OrderShipped(context *gin.Context){
@@ -234,7 +234,7 @@ func OrderShipped(context *gin.Context){
  }
 
  //----> Change the order status.
- err := order.OrderShipped(uint(id))
+ orderEdited, err := order.OrderShipped(uint(id))
 
  //----> Check for error.
  if err != nil {
@@ -243,6 +243,6 @@ func OrderShipped(context *gin.Context){
  }
 
  //----> Send back the response.
- context.JSON(http.StatusOK, gin.H{"status": "success", "message": "Order shipped successfully!"})
+ context.JSON(http.StatusOK, orderEdited)
 
 }

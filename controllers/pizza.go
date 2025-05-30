@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 	"strconv"
+
 	"github.com/alfredamos/go-meal-api/models"
 	"github.com/gin-gonic/gin"
 )
@@ -30,7 +31,7 @@ func CreatePizza(context *gin.Context) {
  }
 
  //----> Send back the response
- context.JSON(http.StatusCreated, gin.H{"message": "Pizza has been created successfully!"})
+ context.JSON(http.StatusCreated, gin.H{"status": "success", "message": "Pizza has been created successfully!", "statusCode": http.StatusCreated})
 
 }
 
@@ -58,7 +59,7 @@ func DeletePizzaById(context *gin.Context) {
  }
 
  //----> Send back the response
- context.JSON(http.StatusOK, gin.H{"message": "Pizza has been deleted successfully!"})
+ context.JSON(http.StatusNoContent, gin.H{"status": "success", "message": "Pizza has been deleted successfully!", "statusCode": http.StatusNoContent})
 
 }
 
@@ -94,7 +95,7 @@ func EditPizzaById(context *gin.Context) {
 }
 
  //----> Send back the response
- context.JSON(http.StatusOK, gin.H{"message": "Pizza has been edited successfully!"})
+ context.JSON(http.StatusNoContent, gin.H{"status": "success", "message": "Pizza has been edited successfully!", "statusCode": http.StatusNoContent})
 }
 
 func GetAllPizza(context *gin.Context) {
@@ -106,12 +107,12 @@ func GetAllPizza(context *gin.Context) {
 
 	//----> Check for error.
 	if err != nil {
-		context.JSON(http.StatusNotFound, gin.H{"message": "Pizzas cannot be retrieved from database!"})
+		context.JSON(http.StatusNotFound, gin.H{"message": "pizzas are not available in the database!"})
 		return
 	}
 	
 	//----> Send back the response
-	context.JSON(http.StatusOK, gin.H{"message": "Pizzas are retrieved successfully!", "pizzas": pizzas})
+	context.JSON(http.StatusOK, pizzas)
 }
 
 func GetPizzaById(context *gin.Context) {
@@ -138,6 +139,6 @@ func GetPizzaById(context *gin.Context) {
  }
 
  //----> Send back the response
- context.JSON(http.StatusOK, gin.H{"message": "Pizza is retrieved successfully!", "pizza" : pizza})
+ context.JSON(http.StatusOK, pizza)
 
 }
