@@ -53,7 +53,7 @@ func (loginModel *LoginModel) Login() (LoginResp, error) {
 }
 
 type ChangePasswordModel struct {
-	Email    string  `json:"email" binding:"required"`
+	Email    string  `json:"email" binding:"required;email"`
 	OldPassword string  `json:"oldPassword" binding:"required"`
 	NewPassword string  `json:"newPassword" binding:"required"`
 	ConfirmPassword string  `json:"confirmPassword" binding:"required"`

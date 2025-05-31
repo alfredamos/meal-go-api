@@ -2,7 +2,6 @@ package authenticate
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm/utils"
@@ -44,8 +43,8 @@ func getRoleFromContext(c *gin.Context) (string, error){
 		return string(""), errors.New("you are not permitted to access this page or perform this function")
 	}
 
-	//----> Convert role to string
-	roleToString := fmt.Sprintf("%v", role)
+	//----> Convert role to string.
+	roleToString := utils.ToString(role)
 
 	//----> Send back the role.
 	return roleToString, nil

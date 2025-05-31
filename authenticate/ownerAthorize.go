@@ -2,9 +2,10 @@ package authenticate
 
 import (
 	"errors"
-	"fmt"
 	"strconv"
+
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm/utils"
 )
 
 func OwnerAuthorize(userId uint, c *gin.Context) error {
@@ -17,9 +18,7 @@ func OwnerAuthorize(userId uint, c *gin.Context) error {
 		}
 
 		//----> Convert user-id from context to string and then to int.
-		userIdStr := fmt.Sprintf("%v", userIdFromContext)
-		userIdInt, err := strconv.ParseUint(userIdStr, 10, 64)
-
+		userIdInt, err := strconv.Atoi(utils.ToString(userIdFromContext))
 		//----> Check for parsing error.
 		if err != nil {
 			return errors.New("user-id could not be parsed")

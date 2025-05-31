@@ -3,7 +3,6 @@ package controllers
 import (
 	"net/http"
 	"strconv"
-
 	"github.com/alfredamos/go-meal-api/models"
 	"github.com/gin-gonic/gin"
 )
@@ -40,8 +39,7 @@ func DeletePizzaById(context *gin.Context) {
  pizza := models.Pizza{}
 
  //----> Get the pizza-id from params.
- idd := context.Param("id")
- id, err := strconv.ParseUint(idd, 10, 32)
+ id, err := strconv.Atoi(context.Param("id"))
 
  //----> Check for error
  if err != nil {
@@ -68,8 +66,7 @@ func EditPizzaById(context *gin.Context) {
  pizza := models.Pizza{}
 
  //----> Get the pizza-id from params.
- idd := context.Param("id")
- id, err := strconv.ParseUint(idd, 10, 32)
+ id, err := strconv.Atoi(context.Param("id"))
 
  //----> Check for error.
  if err != nil {
@@ -120,8 +117,7 @@ func GetPizzaById(context *gin.Context) {
 	pizza := models.Pizza{}
 	
 	//----> Get the pizza-id from params.
-	idd := context.Param("id")
-  id, err:= strconv.ParseUint(idd, 10, 32)
+	id, err := strconv.Atoi(context.Param("id"))
 
  //----> Check for error
  if err != nil {

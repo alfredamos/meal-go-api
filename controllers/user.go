@@ -3,7 +3,6 @@ package controllers
 import (
 	"net/http"
 	"strconv"
-
 	"github.com/alfredamos/go-meal-api/authenticate"
 	"github.com/alfredamos/go-meal-api/models"
 	"github.com/gin-gonic/gin"
@@ -14,8 +13,7 @@ func DeleteUserById(context *gin.Context) {
 	user := models.User{}
 
 	//----> Get the user id from param
-	idd := context.Param("id")
-	id, err:= strconv.ParseUint(idd, 10, 32)
+	id, err := strconv.Atoi(context.Param("id"))
 
  //----> Check for error
  if err != nil {
@@ -59,8 +57,7 @@ func GetUserById(context *gin.Context) {
 	user := models.User{}
 
 	//----> Get the user id from param.
-	idd := context.Param("id")
-	id, err:= strconv.ParseUint(idd, 10, 32)
+	id, err := strconv.Atoi(context.Param("id"))
 
  //----> Check for error
  if err != nil {

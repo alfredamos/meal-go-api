@@ -36,10 +36,8 @@ func DeleteCartItemById(context *gin.Context) {
 	cartItem := models.CartItem{} //----> Cart-item variable.
 	
 	//----> Get the id from param.
-	idd := context.Param("id")
+	id, err := strconv.Atoi(context.Param("id"))
 	
-	id, err := strconv.ParseUint(idd, 10, 64)
-
 	//----> Check for error.
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "id cannot be parsed!", "statusCode": http.StatusBadRequest})
@@ -63,8 +61,7 @@ func EditCartItemById(context *gin.Context) {
 	cartItem := models.CartItem{} //----> Cart-item variable.
 
 	//----> Get the id from param.
-	idd := context.Param("id")
-	id, err := strconv.ParseUint(idd, 10, 64)
+	id, err := strconv.Atoi(context.Param("id"))
 
 	//----> Check for error.
 	if err != nil {
@@ -114,8 +111,7 @@ func GetCartItemById(context *gin.Context) {
 	cartItem := models.CartItem{} //----> Cart-item variable.
 	
 	//----> Get the id from param.
-	idd := context.Param("id")
-	id, err := strconv.ParseUint(idd, 10, 64)
+	id, err := strconv.Atoi(context.Param("id"))
 
 	//----> Check for error.
 	if err != nil {

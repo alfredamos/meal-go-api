@@ -34,8 +34,7 @@ func DeleteOrderById(context *gin.Context){
 	order := models.Order{}
 
 	//----> Get order id from params.
-	idd := context.Param("id")
-	id, err := strconv.ParseUint(idd, 10, 64)
+	id, err := strconv.Atoi(context.Param("id"))
 
 	//----> Check for error.
 	if err != nil {
@@ -55,8 +54,7 @@ func DeleteOrderByUserId(context *gin.Context){
 	order := models.Order{}
 
 	//----> Get the user-id from param.
-	userIdd := context.Param("userId")
-	userId, err := strconv.ParseUint(userIdd, 10, 64)
+	userId, err := strconv.Atoi(context.Param("id"))
 
 	//----> Check for error.
 	if err != nil {
@@ -125,8 +123,7 @@ func GetAllOrderByUserId(context *gin.Context){
 	order := models.Order{}
 
 	//----> Get the user-id from param.
-	userIdd := context.Param("userId")
-	userId, err := strconv.ParseUint(userIdd, 10, 64)
+	userId, err := strconv.Atoi(context.Param("id"))
 
 	//----> Check for parsing error.
 	if err != nil {
@@ -170,8 +167,7 @@ func GetOrderById(context *gin.Context){
 	}
 
 	//----> The id from params.
-	idd:= context.Param("id")
-	id, err := strconv.ParseUint(idd, 10, 32)
+	id, err := strconv.Atoi(context.Param("id"))
 
 	//----> Check for error.
 	if err != nil {
@@ -197,8 +193,7 @@ func OrderDelivered(context *gin.Context){
 	order := models.Order{}
 
 	//----> Get the order-id from param.
-	idd := context.Param("id")
-	id, err := strconv.ParseUint(idd, 10, 32)
+	id, err := strconv.Atoi(context.Param("id"))
 
 	//----> Check for error.
 	if err != nil {
@@ -219,16 +214,16 @@ func OrderDelivered(context *gin.Context){
  context.JSON(http.StatusOK, orderEdited)
 
 }
+
 func OrderShipped(context *gin.Context){
 	//----> declare the order variable.
 	order := models.Order{}
 
  //----> Get the order-id from param.
- idd := context.Param("id")
- id, errUserId := strconv.ParseUint(idd, 10, 32)
+ id, err := strconv.Atoi(context.Param("id"))
 
  //----> Check for error.
- if errUserId != nil {
+ if err != nil {
 	context.JSON(http.StatusBadRequest, gin.H{"message": "Please provide valid userId!"})
 	return
  }
