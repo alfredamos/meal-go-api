@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"github.com/alfredamos/go-meal-api/authenticate"
 	"github.com/alfredamos/go-meal-api/models"
@@ -16,20 +17,20 @@ func ChangePasswordController(context *gin.Context){
 
 	//----> Check for error.
 	if err != nil{
-		context.JSON(http.StatusBadRequest, gin.H{"message": "Invalid credentials!"})
+		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
 	//----> Save the new password in the database.
 	err = changePasswordModel.ChangePassword()
-
+	
 	if err != nil {
-		context.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid credentials!"})
+		context.JSON(http.StatusUnauthorized, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
 	//----> Send back the response.
-	context.JSON(http.StatusOK, gin.H{"status": "success","message": "Password has been changed successfully!", "statusCode": http.StatusOK})
+	context.JSON(http.StatusOK, gin.H{"status": "success","message": "Password has been changed successfully!"})
 }
 
 
@@ -39,10 +40,10 @@ func EditProfileController(context *gin.Context){
 
 	//----> Get the request payload
 	err := context.ShouldBindJSON(&editProfileModel)
-
+	
 	//----> Check for error.
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": "Invalid credentials!"})
+		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
@@ -51,12 +52,12 @@ func EditProfileController(context *gin.Context){
 	
 	//----> Check for error.
 	if err != nil {
-		context.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid credentials!"})
+		context.JSON(http.StatusUnauthorized, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
 	//----> Send back the response
-	context.JSON(http.StatusOK, gin.H{"status": "success","message": "Profile has been changed successfully!", "statusCode": http.StatusOK})
+	context.JSON(http.StatusOK, gin.H{"status": "success","message": "Profile has been changed successfully!"})
 }
 
 
@@ -69,7 +70,7 @@ func LoginController(context *gin.Context) {
 	
 	//----> Check for error
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": "Login failed!"})
+		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
@@ -78,7 +79,7 @@ func LoginController(context *gin.Context) {
 
 	//----> Check for errors.
 	if err != nil {
-		context.JSON(http.StatusUnauthorized, gin.H{"status": "failed!", "message": "Invalid credentials", "statusCode": http.StatusUnauthorized})
+		context.JSON(http.StatusUnauthorized, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
@@ -94,7 +95,7 @@ func LogoutController(context *gin.Context){
 	authenticate.DeleteCookieHandler(context)
 
 	//----> Send back the response.
-	context.JSON(http.StatusOK, gin.H{"status": "success","message": "Logout is successfully!", "statusCode": http.StatusOK})
+	context.JSON(http.StatusOK, gin.H{"status": "success","message": "Logout is successfully!"})
 }
 
 func SignupController(context *gin.Context){
@@ -106,7 +107,7 @@ func SignupController(context *gin.Context){
 	
 	//----> Check for error.
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": "Please provide all values!"})
+		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
@@ -115,10 +116,10 @@ func SignupController(context *gin.Context){
 
 	//----> Check for error.
 	if err != nil {
-		context.JSON(http.StatusUnauthorized, gin.H{"status": "Unauthorized", "message": "Invalid credentials", "statusCode": http.StatusUnauthorized})
+		context.JSON(http.StatusUnauthorized, gin.H{"status": "failed", "message": fmt.Sprintf("%v", err), "statusCode": http.StatusUnauthorized})
 		return
 	}
 
 	//----> Send back the response.
-	context.JSON(http.StatusCreated, gin.H{"status": "success","message": "Signup is successfully!", "statusCode": http.StatusOK})
+	context.JSON(http.StatusCreated, gin.H{"status": "success","message": "Signup is successfully!"})
 }

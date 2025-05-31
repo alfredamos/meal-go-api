@@ -2,10 +2,10 @@ package authenticate
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm/utils"
 )
 
 func OwnerAuthorize(userId uint, c *gin.Context) error {
@@ -18,17 +18,19 @@ func OwnerAuthorize(userId uint, c *gin.Context) error {
 		}
 
 		//----> Convert user-id from context to string and then to int.
-		userIdInt, err := strconv.Atoi(utils.ToString(userIdFromContext))
+		userIdInt, err := strconv.ParseInt(fmt.Sprintf("%v",userIdFromContext), 10, 64)
+		
 		//----> Check for parsing error.
-		if err != nil {
+		 if err != nil {
 			return errors.New("user-id could not be parsed")
-		}
-	
+		} 
+		fmt.Println("In ownerAuthorize, userIdInt : ", userIdInt)
 		//----> Check for equality of userId.
-		isSameUser := isSame(uint(userIdInt), userId) 
-
+		userIsSame := isSameUser(uint(userIdInt), userId) 
+		
 		//----> Same user allowed.
-		if isSameUser {
+		if userIsSame {
+
 			return nil
 		}
 
@@ -54,7 +56,7 @@ func OwnerAuthorize(userId uint, c *gin.Context) error {
 }
 
 //----> Check for checking for same user.
-func isSame(userIdFromContext, userIdFromParam uint) bool{
-	return userIdFromContext == userIdFromParam
+func isSameUser(userId1, userId2 uint) bool{
+	return userId1 == userId2
 }
 

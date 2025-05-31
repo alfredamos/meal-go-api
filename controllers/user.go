@@ -1,8 +1,10 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
+
 	"github.com/alfredamos/go-meal-api/authenticate"
 	"github.com/alfredamos/go-meal-api/models"
 	"github.com/gin-gonic/gin"
@@ -13,11 +15,11 @@ func DeleteUserById(context *gin.Context) {
 	user := models.User{}
 
 	//----> Get the user id from param
-	id, err := strconv.Atoi(context.Param("id"))
+	id, err := strconv.ParseUint(context.Param("id"), 10, 64)
 
  //----> Check for error
  if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": "Please provide a valid id!"})
+		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
  }
 	
@@ -26,12 +28,12 @@ func DeleteUserById(context *gin.Context) {
 
 	//----> Check if the user exist.
 	if err != nil{
-		context.JSON(http.StatusNotFound, gin.H{"message": "This user cannot be deleted!"})
+		context.JSON(http.StatusNotFound, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
 	//----> Send back the response
-	context.JSON(http.StatusNoContent, gin.H{"status": "success", "message": "User has been deleted successfully!", "statusCode": http.StatusNoContent})
+	context.JSON(http.StatusNoContent, gin.H{"status": "success", "message": "User has been deleted successfully!"})
 
 }
 
@@ -44,7 +46,7 @@ func GetAllUsers(context *gin.Context) {
 	
 	//----> Check for error.
 	if err != nil {
-		context.JSON(http.StatusNotFound, gin.H{"status": "failed", "message": "There are no users in the database!", "statusCode": http.StatusNotFound})
+		context.JSON(http.StatusNotFound, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
@@ -57,11 +59,11 @@ func GetUserById(context *gin.Context) {
 	user := models.User{}
 
 	//----> Get the user id from param.
-	id, err := strconv.Atoi(context.Param("id"))
+	id, err := strconv.ParseUint(context.Param("id"), 10, 64)
 
  //----> Check for error
  if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": "Please provide a valid id!"})
+		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
  }
 	
@@ -70,7 +72,7 @@ func GetUserById(context *gin.Context) {
 
 	//----> Check for ownership.
 	if err != nil {
-		context.JSON(http.StatusForbidden, gin.H{"status": "fail", "message": "You are not permitted to view or perform any action on this page!"})
+		context.JSON(http.StatusForbidden, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
@@ -79,7 +81,7 @@ func GetUserById(context *gin.Context) {
 
 	//----> Check if the user exist.
 	if err != nil{
-		context.JSON(http.StatusNotFound, gin.H{"message": "The user is not available in the database!"})
+		context.JSON(http.StatusNotFound, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 

@@ -2,6 +2,8 @@ package models
 
 import (
 	"errors"
+	"fmt"
+
 	"github.com/alfredamos/go-meal-api/authenticate"
 	"github.com/alfredamos/go-meal-api/initializers"
 	"golang.org/x/crypto/bcrypt"
@@ -53,7 +55,7 @@ func (loginModel *LoginModel) Login() (LoginResp, error) {
 }
 
 type ChangePasswordModel struct {
-	Email    string  `json:"email" binding:"required;email"`
+	Email    string  `json:"email" binding:"required"`
 	OldPassword string  `json:"oldPassword" binding:"required"`
 	NewPassword string  `json:"newPassword" binding:"required"`
 	ConfirmPassword string  `json:"confirmPassword" binding:"required"`
@@ -70,30 +72,31 @@ func (changePasswordModel *ChangePasswordModel) ChangePassword() error {
 
 	//----> Compare the newPassword with confirmPassword, they must be equal.
 	isMatchPassword := matchPassword(newPassword, confirmPassword)
-
+	fmt.Println("In change-password-model, isMatchPassword : ", isMatchPassword)
+	fmt.Println("In change-password-model, email : ", email)
 	if !isMatchPassword{
 		return errors.New("passwords must match")
 	}
 
 	//----> Check for existence of user by getting first marched record.
 	err := initializers.DB.Where("email = ?", email).First(&user).Error
-
+	fmt.Println("In change-password-model, error after save in db : ", err)
 	//----> Record does not exist.
 	if err != nil{		
 		return errors.New("invalid credentials")
 	}
 
 	//----> Compare the old password with the one in the database, they must match.
-	isValidPasswordError := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(oldPassword))
-	
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(oldPassword))
+	fmt.Println("In change-password-model, isValidPasswordError after comparing with old password : ", err)
 	//----> Check validity of password.
-	if isValidPasswordError != nil{
+	if err != nil{
 		return errors.New("invalid credential")
 	}
 
 	//----> Hatch password
   hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newPassword), 14)
-
+	fmt.Println("In change-password-model, error hatching password : ", err)
 	//----> Check for error.
 	if err != nil{
 		return errors.New("invalid credentials")
@@ -104,6 +107,8 @@ func (changePasswordModel *ChangePasswordModel) ChangePassword() error {
 	
 	//----> Save the change in database.
 	err = initializers.DB.Save(&user).Error
+
+	fmt.Println("In change-password-model, error after saving new password : ", err)
 
 	//----> Check for error.
 	if err != nil{
@@ -145,12 +150,12 @@ func (editProfileModel *EditProfileModel) EditProfile() error {
 	//----> Check for the availability of user.
 	email := editProfileModel.Email
 	err := initializers.DB.Where("email = ?", email).First(&user).Error
-
+	
 	//----> Record does not exist.
 	if err != nil{		
 		return errors.New("invalid credentials")
 	}
-
+	
 	//----> Check for password validity.
 	password := editProfileModel.Password
 	isValidPasswordError := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
@@ -161,7 +166,7 @@ func (editProfileModel *EditProfileModel) EditProfile() error {
 	} 
 
 	//----> Update the user profile.
-	user.Name =editProfileModel.Name
+	user.Name = editProfileModel.Name
 	user.Address = editProfileModel.Address
 	user.Image =  editProfileModel.Image
 	user.Gender = editProfileModel.Gender

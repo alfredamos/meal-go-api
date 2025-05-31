@@ -1,8 +1,10 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
+
 	"github.com/alfredamos/go-meal-api/models"
 	"github.com/gin-gonic/gin"
 )
@@ -15,7 +17,7 @@ func CreateCartItem(context *gin.Context) {
 
 	//----> Check for binding error.
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"status": "failed", "message": "All values must be provided!", "statusCode": http.StatusBadRequest})
+		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
@@ -24,23 +26,23 @@ func CreateCartItem(context *gin.Context) {
 
 	//----> Check for error.
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"status": "failed", "message": "All values must be provided", "statusCode": http.StatusBadRequest})
+		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
 	//----> send back the response.
-	context.JSON(http.StatusBadRequest, gin.H{"status": "Success", "message": "Cart-item has been created successfully!", "statusCode": http.StatusCreated})
+	context.JSON(http.StatusBadRequest, gin.H{"status": "Success", "message": "Cart-item has been created successfully!"})
 }
 
 func DeleteCartItemById(context *gin.Context) {
 	cartItem := models.CartItem{} //----> Cart-item variable.
 	
 	//----> Get the id from param.
-	id, err := strconv.Atoi(context.Param("id"))
+	id, err := strconv.ParseUint(context.Param("id"), 10, 64)
 	
 	//----> Check for error.
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "id cannot be parsed!", "statusCode": http.StatusBadRequest})
+		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	} 
 
@@ -49,23 +51,23 @@ func DeleteCartItemById(context *gin.Context) {
 
 	//----> Check for error.
 	if err != nil {
-		context.JSON(http.StatusNotFound, gin.H{"status": "fail", "message": "Cart-item with the given id cannot be deleted!", "statusCode": http.StatusNotFound})
+		context.JSON(http.StatusNotFound, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
 	//----> Send back the response.
-	context.JSON(http.StatusNoContent, gin.H{"status": "Success", "message": "Cart-item has been deleted successfully!", "statusCode": http.StatusNoContent})
+	context.JSON(http.StatusNoContent, gin.H{"status": "Success", "message": "Cart-item has been deleted successfully!"})
 }
 
 func EditCartItemById(context *gin.Context) {
 	cartItem := models.CartItem{} //----> Cart-item variable.
 
 	//----> Get the id from param.
-	id, err := strconv.Atoi(context.Param("id"))
+	id, err := strconv.ParseUint(context.Param("id"), 10, 64)
 
 	//----> Check for error.
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "id cannot be parsed!", "statusCode": http.StatusBadRequest})
+		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
@@ -74,7 +76,7 @@ func EditCartItemById(context *gin.Context) {
 
 	//----> Check for error.
 	if err != nil {
-	 context.JSON(http.StatusBadRequest, gin.H{"message": "All values must be provided!"})
+	 context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 	 return
 	}
 
@@ -83,12 +85,12 @@ func EditCartItemById(context *gin.Context) {
 
 	//----> Check for error.
 	if err != nil {
-		context.JSON(http.StatusNotFound, gin.H{"status": "fail", "message": "Cart-item cannot be edited", "statusCode": http.StatusNotFound})
+		context.JSON(http.StatusNotFound, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
 	//----> send back the response.
-	context.JSON(http.StatusNoContent, gin.H{"status": "Success", "message": "Cart-item has been edited successfully!", "statusCode": http.StatusNoContent})
+	context.JSON(http.StatusNoContent, gin.H{"status": "Success", "message": "Cart-item has been edited successfully!"})
 }
 
 func GetAllCartItems(context *gin.Context) {
@@ -99,7 +101,7 @@ func GetAllCartItems(context *gin.Context) {
 
 	//----> Check for error.
 	if err != nil {
-		context.JSON(http.StatusNotFound, gin.H{"status": "fail", "message": "Cart-items cannot be edited", "statusCode": http.StatusNotFound})
+		context.JSON(http.StatusNotFound, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
@@ -111,11 +113,11 @@ func GetCartItemById(context *gin.Context) {
 	cartItem := models.CartItem{} //----> Cart-item variable.
 	
 	//----> Get the id from param.
-	id, err := strconv.Atoi(context.Param("id"))
+	id, err := strconv.ParseUint(context.Param("id"), 10, 64)
 
 	//----> Check for error.
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "id cannot be parsed!", "statusCode": http.StatusBadRequest})
+		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	} 
 
@@ -124,7 +126,7 @@ func GetCartItemById(context *gin.Context) {
 
 	//----> Check for error.
 	if err != nil {
-		context.JSON(http.StatusNotFound, gin.H{"status": "fail", "message": "cart-item is not found!", "statusCode": http.StatusNotFound})
+		context.JSON(http.StatusNotFound, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 

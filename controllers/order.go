@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"github.com/alfredamos/go-meal-api/authenticate"
@@ -17,15 +18,21 @@ func CheckOutOrder(context *gin.Context){
 	
 	//----> Check for error.
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": "All values must be provided!"})
+		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
 	//----> Save the order in the database.
-	order.CheckOutOrder()
+	err = order.CheckOutOrder()
+
+	//----> Check for error.
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
+		return
+	}
 
 	//----> send back the response
-	context.JSON(http.StatusCreated, gin.H{"status": "Success", "message": "Order has been created successfully!", "statusCode": http.StatusCreated})
+	context.JSON(http.StatusCreated, gin.H{"status": "success!", "message": "Order has been created successfully!"})
 
 }
 
@@ -34,19 +41,25 @@ func DeleteOrderById(context *gin.Context){
 	order := models.Order{}
 
 	//----> Get order id from params.
-	id, err := strconv.Atoi(context.Param("id"))
+	id, err := strconv.ParseUint(context.Param("id"), 10, 64)
 
 	//----> Check for error.
 	if err != nil {
-		context.JSON(http.StatusOK, gin.H{"message": "Order-id couldn't be parsed!"})
+		context.JSON(http.StatusOK, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 	
 	//----> Delete order with this id.
-	order.DeleteOrderById(uint(id))
+	err = order.DeleteOrderById(uint(id))
+
+	//----> Check for error.
+	if err != nil {
+		context.JSON(http.StatusOK, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
+		return
+	}
 
 	//----> Send back the response.
-	context.JSON(http.StatusNoContent, gin.H{"status": "Success", "message": "Order has been deleted successfully!", "statusCode": http.StatusNoContent})
+	context.JSON(http.StatusNoContent, gin.H{"status": "Success", "message": "Order has been deleted successfully!"})
 }
 
 func DeleteOrderByUserId(context *gin.Context){
@@ -54,11 +67,11 @@ func DeleteOrderByUserId(context *gin.Context){
 	order := models.Order{}
 
 	//----> Get the user-id from param.
-	userId, err := strconv.Atoi(context.Param("id"))
+	userId, err := strconv.ParseUint(context.Param("id"), 10, 64)
 
 	//----> Check for error.
 	if err != nil {
-		context.JSON(http.StatusOK, gin.H{"message": "User-id couldn't be parsed!"})
+		context.JSON(http.StatusOK, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
@@ -67,7 +80,7 @@ func DeleteOrderByUserId(context *gin.Context){
 
 	//----> Check for ownership.
 	if err != nil {
-		context.JSON(http.StatusForbidden, gin.H{"status": "fail", "message": "You are not permitted to view or perform any action on this page!"})
+		context.JSON(http.StatusForbidden, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
@@ -76,12 +89,12 @@ func DeleteOrderByUserId(context *gin.Context){
 
 	//----> Check for error
 	if err != nil {
-		context.JSON(http.StatusNotFound, gin.H{"status": "fail", "message": "orders are not available in the database!"})
+		context.JSON(http.StatusNotFound, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
 	//----> Send back the response.
-	context.JSON(http.StatusNoContent, gin.H{"status": "Success", "message": "Order has been deleted successfully!", "statusCode": http.StatusNoContent})
+	context.JSON(http.StatusNoContent, gin.H{"status": "Success", "message": "Order has been deleted successfully!"})
 }
 
 func DeleteAllOrders(context *gin.Context){
@@ -93,12 +106,12 @@ func DeleteAllOrders(context *gin.Context){
 
 	//----> Check for error
 	if err != nil {
-		context.JSON(http.StatusNotFound, gin.H{"status": "fail", "message": "orders are not available in the database!"})
+		context.JSON(http.StatusNotFound, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
 	//----> Send back the response.
-	context.JSON(http.StatusNoContent, gin.H{"status": "Success", "message": "Order has been deleted successfully!", "statusCode": http.StatusNoContent})
+	context.JSON(http.StatusNoContent, gin.H{"status": "Success", "message": "All Orders have been deleted successfully!"})
 }
 
 func GetAllOrders(context *gin.Context){
@@ -110,7 +123,7 @@ func GetAllOrders(context *gin.Context){
 
 	//----> Check for error.
 	if err != nil {
-		context.JSON(http.StatusNotFound, gin.H{"status": "fail", "message": "orders cannot be retrieved!"})
+		context.JSON(http.StatusNotFound, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
@@ -123,20 +136,20 @@ func GetAllOrderByUserId(context *gin.Context){
 	order := models.Order{}
 
 	//----> Get the user-id from param.
-	userId, err := strconv.Atoi(context.Param("id"))
+	userId, err := strconv.ParseUint(context.Param("id"), 10, 64)
 
 	//----> Check for parsing error.
 	if err != nil {
-		context.JSON(http.StatusForbidden, gin.H{"status": "fail", "message": "You are not permitted to view or perform any action on this page!"})
+		context.JSON(http.StatusForbidden, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
 	//----> Check for ownership permission or admin privilege.
 	err = authenticate.OwnerAuthorize(uint(userId), context)
-
+	
 	//----> Check for error.
 	if err != nil {
-		context.JSON(http.StatusForbidden, gin.H{"status": "fail", "message": "You are not permitted to view or perform any action on this page!"})
+		context.JSON(http.StatusForbidden, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
@@ -145,7 +158,7 @@ func GetAllOrderByUserId(context *gin.Context){
 
 	//----> Check for error.
 	if err != nil {
-		context.JSON(http.StatusNotFound, gin.H{"status": "fail", "message": "orders cannot be retrieved!"})
+		context.JSON(http.StatusNotFound, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
@@ -162,16 +175,16 @@ func GetOrderById(context *gin.Context){
 
 	//----> Check for ownership.
 	if err != nil {
-		context.JSON(http.StatusForbidden, gin.H{"status": "fail", "message": "You are not permitted to view or perform any action on this page!"})
+		context.JSON(http.StatusForbidden, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
 	//----> The id from params.
-	id, err := strconv.Atoi(context.Param("id"))
+	id, err := strconv.ParseUint(context.Param("id"), 10, 64)
 
 	//----> Check for error.
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": "Please provide a valid id!"})
+		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
@@ -180,7 +193,7 @@ func GetOrderById(context *gin.Context){
 
 	//----> Check for error.
 	if err != nil {
-		context.JSON(http.StatusNotFound, gin.H{"status": "fail", "message": "order cannot be retrieved!"})
+		context.JSON(http.StatusNotFound, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
@@ -193,11 +206,11 @@ func OrderDelivered(context *gin.Context){
 	order := models.Order{}
 
 	//----> Get the order-id from param.
-	id, err := strconv.Atoi(context.Param("id"))
+	id, err := strconv.ParseUint(context.Param("id"), 10, 64)
 
 	//----> Check for error.
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": "Please provide valid userId!"})
+		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 
@@ -206,7 +219,7 @@ func OrderDelivered(context *gin.Context){
 
 	//----> Check for error.
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "Order is yet to be shipped or has already been deliver"})
+		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 	return
   }
 
@@ -220,11 +233,11 @@ func OrderShipped(context *gin.Context){
 	order := models.Order{}
 
  //----> Get the order-id from param.
- id, err := strconv.Atoi(context.Param("id"))
+ id, err := strconv.ParseUint(context.Param("id"), 10, 64)
 
  //----> Check for error.
  if err != nil {
-	context.JSON(http.StatusBadRequest, gin.H{"message": "Please provide valid userId!"})
+	context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 	return
  }
 
@@ -233,7 +246,7 @@ func OrderShipped(context *gin.Context){
 
  //----> Check for error.
  if err != nil {
-	context.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "Order has already been shipped or deliver"})
+	context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 	return
  }
 

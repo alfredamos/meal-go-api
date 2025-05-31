@@ -1,8 +1,10 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
+
 	"github.com/alfredamos/go-meal-api/models"
 	"github.com/gin-gonic/gin"
 )
@@ -16,7 +18,7 @@ func CreatePizza(context *gin.Context) {
 
  //----> Check for error.
  if err != nil {
-	context.JSON(http.StatusBadRequest, gin.H{"message": "All values must be provided!"})
+	context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 	return
  }
 
@@ -25,7 +27,7 @@ func CreatePizza(context *gin.Context) {
 
  //----> Check for error.
  if err != nil {
-	context.JSON(http.StatusBadRequest, gin.H{"message": "Pizza cannot be created!"})
+	context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 	return
  }
 
@@ -39,11 +41,11 @@ func DeletePizzaById(context *gin.Context) {
  pizza := models.Pizza{}
 
  //----> Get the pizza-id from params.
- id, err := strconv.Atoi(context.Param("id"))
+ id, err := strconv.ParseUint(context.Param("id"), 10, 64)
 
  //----> Check for error
  if err != nil {
-	context.JSON(http.StatusBadRequest, gin.H{"message": "Please provide a valid id!"})
+	context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 	return
  }
  
@@ -52,7 +54,7 @@ func DeletePizzaById(context *gin.Context) {
 
  //----> Check for error.
  if err != nil {
-	context.JSON(http.StatusNotFound, gin.H{"message": "Pizza cannot be deleted!"})
+	context.JSON(http.StatusNotFound, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 	return
  }
 
@@ -66,11 +68,11 @@ func EditPizzaById(context *gin.Context) {
  pizza := models.Pizza{}
 
  //----> Get the pizza-id from params.
- id, err := strconv.Atoi(context.Param("id"))
+ id, err := strconv.ParseUint(context.Param("id"), 10, 64)
 
  //----> Check for error.
  if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": "Please provide a valid id!"})
+		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
  
@@ -79,7 +81,7 @@ func EditPizzaById(context *gin.Context) {
 
  //----> Check for error.
  if err != nil {
-	context.JSON(http.StatusBadRequest, gin.H{"message": "All values must be provided!"})
+	context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 	return
  }
 
@@ -87,7 +89,7 @@ func EditPizzaById(context *gin.Context) {
  err = pizza.EditPizzaId(uint(id))
 
  if err != nil {
-	context.JSON(http.StatusNotFound, gin.H{"message": "Pizza cannot be updated!"})
+	context.JSON(http.StatusNotFound, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 	return
 }
 
@@ -104,7 +106,7 @@ func GetAllPizza(context *gin.Context) {
 
 	//----> Check for error.
 	if err != nil {
-		context.JSON(http.StatusNotFound, gin.H{"message": "pizzas are not available in the database!"})
+		context.JSON(http.StatusNotFound, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
 	}
 	
@@ -117,11 +119,11 @@ func GetPizzaById(context *gin.Context) {
 	pizza := models.Pizza{}
 	
 	//----> Get the pizza-id from params.
-	id, err := strconv.Atoi(context.Param("id"))
+	id, err := strconv.ParseUint(context.Param("id"), 10, 64)
 
  //----> Check for error
  if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": "Please provide a valid id!"})
+		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
  }
  
@@ -130,7 +132,7 @@ func GetPizzaById(context *gin.Context) {
 
  //----> Check for error.
  if err != nil {
-	context.JSON(http.StatusNotFound, gin.H{"message": "Pizza cannot be retrieved from database!"})
+	context.JSON(http.StatusNotFound, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 	return
  }
 
