@@ -11,13 +11,13 @@ func RegisteredRoutes(server *gin.Engine){
 	unProtectedRoutes(server)
 	
 	//----> Apply middleware for protected routes
-	r := server.Use(authenticate.VerifyTokenJwt)
+	r := server.Group("/api").Use(authenticate.VerifyTokenJwt)
 
 	//----> Protected routes.
 	protectedRoutes(r)
 	
 	//----> Admin role permitted routes middleware.
-	p := server.Use(authenticate.VerifyTokenJwt, authenticate.RolePermission("Admin"))
+	p := server.Group("/api").Use(authenticate.VerifyTokenJwt, authenticate.RolePermission("Admin"))
 	
 	//----> Admin routes
 	adminRoutes(p)

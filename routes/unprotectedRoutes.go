@@ -7,10 +7,10 @@ import (
 
 func unProtectedRoutes(server *gin.Engine){
 	//----> Auth-routes.
-	server.POST("/auth/signup", controllers.SignupController)
-	server.POST("/auth/login",controllers.LoginController)
+	server.POST("/api/auth/signup", controllers.SignupController)
+	server.POST("/api/auth/login",controllers.LoginController)
 
 	//----> Pizza-routes.
-	server.GET("/pizzas", controllers.GetAllPizza)
+	server.GET("/api/pizzas", controllers.GetAllPizza)
 
 }

@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -12,7 +13,7 @@ import (
 var secretKey = os.Getenv("JWT_TOKEN_SECRET")
 
 func GenerateToken(name string, email string, userId uint, role string) (string, error){
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{"name": name, "email": email, "userId": userId, "role": role, "expiresAt": time.Now().Add(time.Hour * 2)})
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{"name": name, "email": email, "userId": userId, "role": role, "expiresAt": time.Now().Add(time.Hour * 2).Unix(),})
 	return token.SignedString([]byte(secretKey))
 }
 
@@ -55,7 +56,7 @@ func getUserClaims(c *gin.Context, parsedToken jToken) error{
 		name := claims["name"].(string)
 		email := claims["email"].(string)
 		role := claims["role"].(string)
-		userId := claims["userId"]
+		userId := uint(claims["userId"].(float64))
 
 		//----> Set the claims on gin context
 		c.Set("name", name)

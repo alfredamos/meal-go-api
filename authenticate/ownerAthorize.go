@@ -2,31 +2,15 @@ package authenticate
 
 import (
 	"errors"
-	"fmt"
-	"strconv"
-
 	"github.com/gin-gonic/gin"
 )
 
 func OwnerAuthorize(userId uint, c *gin.Context) error {
 		//----> Get user id from context.
-		userIdFromContext, exists  := c.Get("userId")
+		userIdInt := GetUserIdFromContext(c)
 
-		//----> Check for existence of user id in context.
-		if !exists {
-			return errors.New("you are not permitted to access this page or perform this function")
-		}
-
-		//----> Convert user-id from context to string and then to int.
-		userIdInt, err := strconv.ParseInt(fmt.Sprintf("%v",userIdFromContext), 10, 64)
-		
-		//----> Check for parsing error.
-		 if err != nil {
-			return errors.New("user-id could not be parsed")
-		} 
-		fmt.Println("In ownerAuthorize, userIdInt : ", userIdInt)
 		//----> Check for equality of userId.
-		userIsSame := isSameUser(uint(userIdInt), userId) 
+		userIsSame := isSameUser(userIdInt, userId) 
 		
 		//----> Same user allowed.
 		if userIsSame {
@@ -35,12 +19,7 @@ func OwnerAuthorize(userId uint, c *gin.Context) error {
 		}
 
 		//----> Get the user role.
-		role, err := getRoleFromContext(c)
-
-		//----> Check for error.
-		if err != nil{
-			return errors.New("role cannot be retrieved from context")
-		}
+		role := GetRoleFromContext(c)
 
 		//----> Check for admin role.
 		isAdmin := role == "Admin"
