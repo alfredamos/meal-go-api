@@ -39,8 +39,8 @@ type Order struct {
 
 func (order *Order) DeleteOrderById(id uint) error{
 	//----> Check to see if the order to be deleted is available in the database.
-	err := initializers.DB.Model(&Order{}).First(&order, id).Error
-
+	err := initializers.DB.Model(&Order{}).Preload("CartItems").First(&order, id).Error
+	
 	//----> Check for error.
 	if err != nil {
 		return errors.New("order does not exist")
@@ -72,7 +72,7 @@ func (*Order) DeleteOrderByUserId(userId uint) error{
 	orders := []Order{} //----> Orders variable.
 
 	//----> Retrieve orders from database.
-	err := initializers.DB.Find(&orders, Order{UserID: userId}).Error
+	err := initializers.DB.Preload("CartItems").Find(&orders, Order{UserID: userId}).Error
 	
 	//----> Check for error.
 	if err != nil {
@@ -94,7 +94,7 @@ func (*Order) DeleteAllOrders() error{
 	orders := []Order{} //----> Orders variable.
 
 	//----> Retrieve orders from database.
-	err := initializers.DB.Find(&orders).Error
+	err := initializers.DB.Preload("CartItems").Find(&orders).Error
 	
 	//----> Check for error.
 	if err != nil {

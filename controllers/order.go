@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+
 	"github.com/alfredamos/go-meal-api/authenticate"
 	"github.com/alfredamos/go-meal-api/models"
 	"github.com/gin-gonic/gin"
@@ -42,7 +43,7 @@ func DeleteOrderById(context *gin.Context){
 
 	//----> Get order id from params.
 	id, err := strconv.ParseUint(context.Param("id"), 10, 64)
-
+	fmt.Println("In delete-order-by-id-controller, id : ", id)
 	//----> Check for error.
 	if err != nil {
 		context.JSON(http.StatusOK, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
@@ -67,7 +68,7 @@ func DeleteOrderByUserId(context *gin.Context){
 	order := models.Order{}
 
 	//----> Get the user-id from param.
-	userId, err := strconv.ParseUint(context.Param("id"), 10, 64)
+	userId, err := strconv.ParseUint(context.Param("userId"), 10, 64)
 
 	//----> Check for error.
 	if err != nil {
@@ -136,7 +137,7 @@ func GetAllOrderByUserId(context *gin.Context){
 	order := models.Order{}
 
 	//----> Get the user-id from param.
-	userId, err := strconv.ParseUint(context.Param("id"), 10, 64)
+	userId, err := strconv.ParseUint(context.Param("userId"), 10, 64)
 
 	//----> Check for parsing error.
 	if err != nil {
