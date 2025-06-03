@@ -11,21 +11,12 @@ func OwnerAuthorize(userId uint, c *gin.Context) error {
 
 		//----> Check for equality of userId.
 		userIsSame := isSameUser(userIdInt, userId) 
-		
-		//----> Same user allowed.
-		if userIsSame {
-
-			return nil
-		}
 
 		//----> Get the user role.
-		role := GetRoleFromContext(c)
+		_, isAdmin := GetRoleFromContext(c)
 
-		//----> Check for admin role.
-		isAdmin := role == "Admin"
-
-		//----> Admin is allowed.
-		if isAdmin {
+		//----> Admin and same user are allowed.
+		if isAdmin || userIsSame {
 			return nil
 		}
 

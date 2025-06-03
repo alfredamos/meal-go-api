@@ -9,7 +9,7 @@ import (
 func RolePermission(roles ...string) gin.HandlerFunc{
 	return func(c *gin.Context){
 		//----> Get user role from context.
-		role := GetRoleFromContext(c)
+		role, _ := GetRoleFromContext(c)
 
 		//----> Check for role in roles slice.
 		isValidRole := utils.Contains(roles, role)
