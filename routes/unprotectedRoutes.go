@@ -5,12 +5,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func unProtectedRoutes(server *gin.Engine){
+func unProtectedRoutes(server *gin.RouterGroup){
 	//----> Auth-routes.
-	server.POST("/api/auth/signup", controllers.SignupController)
-	server.POST("/api/auth/login",controllers.LoginController)
+	server.POST("/auth/signup", controllers.SignupController)
+	server.POST("/auth/login",controllers.LoginController)
 
 	//----> Pizza-routes.
-	server.GET("/api/pizzas", controllers.GetAllPizza)
+	server.GET("/pizzas", controllers.GetAllPizza)
 
 }

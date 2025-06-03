@@ -7,6 +7,7 @@ import (
 
 func protectedRoutes(r gin.IRoutes){
 	//----> Auth routes.
+	r.GET("/auth/current-user", controllers.GetCurrentUserController)
 	r.PATCH("/auth/change-password", controllers.ChangePasswordController)
 	r.PATCH("/auth/edit-profile", controllers.EditProfileController)
 	r.POST("/auth/logout",controllers.LogoutController)

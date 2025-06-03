@@ -118,6 +118,19 @@ func (changePasswordModel *ChangePasswordModel) ChangePassword() error {
 	return nil
 }
 
+func GetCurrentUser(userId uint) (User, error){
+	//----> Get user with the given id.
+	user, err := userGetById(userId)
+	
+	//----> Check for error.
+	if err != nil {
+		return User{}, errors.New("user cannot be retrieved")
+	}
+
+	//----> Send back the response.
+	 return user, nil
+}
+
 type Role string
 
 const (

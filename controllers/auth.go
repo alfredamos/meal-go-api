@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+
 	"github.com/alfredamos/go-meal-api/authenticate"
 	"github.com/alfredamos/go-meal-api/models"
 	"github.com/gin-gonic/gin"
@@ -31,6 +32,23 @@ func ChangePasswordController(context *gin.Context){
 
 	//----> Send back the response.
 	context.JSON(http.StatusOK, gin.H{"status": "success","message": "Password has been changed successfully!"})
+}
+
+func GetCurrentUserController(context *gin.Context){
+	//----> Get the user-id of the current login user.
+	userId := authenticate.GetUserIdFromContext(context)
+
+	//----> Get the current login user.
+	user, err := models.GetCurrentUser(userId)
+
+	//----> Check for error.
+	if err != nil {
+		context.JSON(http.StatusUnauthorized, gin.H{"status": "failed", "message": err.Error()})
+		return
+	}
+	
+	//----> Send back the response.
+	context.JSON(http.StatusOK, user)
 }
 
 
