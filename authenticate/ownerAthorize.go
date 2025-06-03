@@ -12,7 +12,7 @@ func OwnerAuthorize(userId uint, c *gin.Context) error {
 		//----> Check for equality of userId.
 		userIsSame := isSameUser(userIdInt, userId) 
 
-		//----> Get the user role.
+		//----> Get admin user.
 		_, isAdmin := GetRoleFromContext(c)
 
 		//----> Admin and same user are allowed.
@@ -20,7 +20,7 @@ func OwnerAuthorize(userId uint, c *gin.Context) error {
 			return nil
 		}
 
-		// You are not admin neither is same user, hence you are not allowed.
+		//----> You are not admin neither is same user, hence you are not allowed.
 		return errors.New("you are not permitted to access this page or perform this function")
 
 }
