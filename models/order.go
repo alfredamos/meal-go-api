@@ -210,6 +210,7 @@ type Carts []Cart
 
 type OrderPayload struct {
 	UserId uint `json:"userId"`
+	PaymentId string `json:"paymentId"`
 	Carts
 }
 
@@ -217,9 +218,10 @@ func (order *OrderPayload) CheckOutOrder() error{
 	//----> Get the carts slice.
 	carts := order.Carts //----> Cart-items.
 	userId := order.UserId //----> User-id
+	paymentId := order.PaymentId //----> Payment-id
 
 	//----> Make order struct.
-	orderPayload := makeOrder(userId, carts)
+	orderPayload := makeOrder(userId, carts, paymentId)
 
 	//----> Insert order in the database.
 	err := initializers.DB.Create(&orderPayload).Error

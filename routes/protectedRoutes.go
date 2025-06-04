@@ -30,6 +30,9 @@ func protectedRoutes(r gin.IRoutes){
 	//----> Pizza-routes.
 	r.GET("/pizzas/:id", controllers.GetPizzaById)
 
+	//----> Stripe payment-route
+	r.POST("/stripe-payment/checkout", controllers.CreatePaymentController)
+
 	//----> User-route
 	r.GET("/users/:id", controllers.GetUserById)
 

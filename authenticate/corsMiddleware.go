@@ -21,7 +21,7 @@ func CorsMiddleware() gin.HandlerFunc {
 	// Return the actual middleware handler function
 	return func(c *gin.Context) {
 	 //----> Get the Origin header from the request
-	 origin := c.Request.Header.Get("Origin")
+	 origin := GetOrigin(c)
 
 	 //----> Function to check if a given origin is allowed
 	 isOriginAllowed := getAllAllowedOrigins(origin, allowedOrigins)
@@ -61,4 +61,8 @@ func CorsMiddleware() gin.HandlerFunc {
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, PATCH, DELETE, OPTIONS, GET, PUT")
+ }
+
+ func GetOrigin(c *gin.Context) string{
+	return c.Request.Header.Get("Origin")
  }

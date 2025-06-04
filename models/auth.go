@@ -3,7 +3,6 @@ package models
 import (
 	"errors"
 	"fmt"
-
 	"github.com/alfredamos/go-meal-api/authenticate"
 	"github.com/alfredamos/go-meal-api/initializers"
 	"golang.org/x/crypto/bcrypt"

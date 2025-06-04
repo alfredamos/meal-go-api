@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"time"
+
 	"github.com/alfredamos/go-meal-api/initializers"
 )
 
@@ -24,14 +25,14 @@ func CalTotalPriceAndQuantity(carts Carts) (float64, float64) {
 	return totalQuantity, totalPrice
 }
 
-func makeOrder(userId uint, carts []Cart) Order{
+func makeOrder(userId uint, carts []Cart, paymentId string) Order{
 	//----> Get the total quantity and total price.
 	totalQuantity, totalPrice := CalTotalPriceAndQuantity(carts)
 
 	//----> Make order.
 	order := Order{
 		UserID:        userId,
-		PaymentId:     "2edklugr",
+		PaymentId:     getPaymentId(paymentId),
 		OrderDate:     time.Now(),
 		TotalQuantity: totalQuantity,
 		TotalPrice:    totalPrice,
@@ -42,6 +43,19 @@ func makeOrder(userId uint, carts []Cart) Order{
 	}
 
 	return order
+}
+
+func getPaymentId(paymentId string) string{
+	result := string("") //----> Initialize result.
+
+	//----> Set payment id as appropriate.
+	if len(paymentId) == 0 {
+			result = "wehdkjrifbsvss" //----> Payment-id is not given.
+	} else {
+			result = paymentId //----> Payment-id is given.
+	}
+
+	return result
 }
 
 func makeCartItems(carts []Cart, orderId uint) []CartItem {
