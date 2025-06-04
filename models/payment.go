@@ -53,7 +53,7 @@ func getLineItems(cartItems []Cart)[]*stripe.CheckoutSessionLineItemParams{
 				Currency: stripe.String("usd"),
 				ProductData: &stripe.CheckoutSessionLineItemPriceDataProductDataParams{
 					Name: stripe.String(item.Name),
-					//Images: stripe.StringSlice([]string{item.Image}),
+					Images: stripe.StringSlice([]string{item.Image}),
 				},
 				UnitAmount: stripe.Int64(int64(item.Price * 100)),
 			},
@@ -68,7 +68,7 @@ func getLineItems(cartItems []Cart)[]*stripe.CheckoutSessionLineItemParams{
 } 
 
 func MakeSuccessAndCancelUrls(origin string) (string, string){
-	origin = "https://example.com"
+	//origin = "https://example.com"
 	successUrl := fmt.Sprintf("%v/orders/payment-success", origin)
 	cancelUrl := fmt.Sprintf("%v/orders/payment-failure", origin)
 
