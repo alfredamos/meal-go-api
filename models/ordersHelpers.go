@@ -8,7 +8,7 @@ import (
 	"github.com/alfredamos/go-meal-api/initializers"
 )
 
-func CalTotalPriceAndQuantity(carts Carts) (float64, float64) {
+func CalTotalPriceAndQuantity(carts []CartItem) (float64, float64) {
 	//----> Initialize totalQuantity and totalPrice.
 	totalQuantity := 0.0 //----> Total quantity
 	totalPrice := 0.0 //----> Total price.
@@ -25,7 +25,7 @@ func CalTotalPriceAndQuantity(carts Carts) (float64, float64) {
 	return totalQuantity, totalPrice
 }
 
-func makeOrder(userId uint, carts []Cart, paymentId string) Order{
+func makeOrder(userId uint, carts []CartItem, paymentId string) Order{
 	//----> Get the total quantity and total price.
 	totalQuantity, totalPrice := CalTotalPriceAndQuantity(carts)
 
@@ -58,7 +58,7 @@ func getPaymentId(paymentId string) string{
 	return result
 }
 
-func makeCartItems(carts []Cart, orderId uint) []CartItem {
+func makeCartItems(carts []CartItem, orderId uint) []CartItem {
 	newCarts := []CartItem{} //----> Cart variable.
 
 	//----> Make the cart-items by composing cart-item struct.
@@ -69,7 +69,7 @@ func makeCartItems(carts []Cart, orderId uint) []CartItem {
 			Quantity: value.Quantity,
 			Image:    value.Image,
 			OrderID:  orderId,
-			PizzaID:  value.PizzaId,
+			PizzaID:  value.PizzaID,
 		}
 
 		//----> Append newCart to newCarts.

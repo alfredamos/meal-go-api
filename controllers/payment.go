@@ -1,8 +1,10 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"os"
+
 	"github.com/alfredamos/go-meal-api/authenticate"
 	"github.com/alfredamos/go-meal-api/models"
 	"github.com/gin-gonic/gin"
@@ -10,7 +12,7 @@ import (
 
 func CreatePaymentController(context *gin.Context){
 	//----> Get the origin.
-	origin := authenticate.GetOrigin(context)
+  origin := authenticate.GetOrigin(context)
 
 	//----> Get the cancel and success urls.
 	cancelUrl, successUrl := models.MakeSuccessAndCancelUrls(origin)
@@ -28,8 +30,9 @@ func CreatePaymentController(context *gin.Context){
 	payment := models.Payment{CancelUrl: cancelUrl, SuccessUrl: successUrl, StripeSecretKey: stripeSecretKey}
 
 	//----> Initialize orderPayload
-	orderPayload := models.OrderPayload{}
-
+	orderPayload := models.PayloadOrder{}
+	reqBody := context.Request.Body
+	fmt.Printf("%+v ,request-body : ", reqBody)
 	//----> Get the request payload
 	err := context.ShouldBindJSON(&orderPayload)
 
@@ -38,7 +41,7 @@ func CreatePaymentController(context *gin.Context){
 		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": err.Error()})
 		return
   }
-
+	fmt.Printf("%+v", orderPayload)
 	//----> Make the payment by stripe.
 	sessionPayload, err := payment.CreatePayment(orderPayload)
 
@@ -52,9 +55,10 @@ func CreatePaymentController(context *gin.Context){
 	if sessionPayload.ID != string("") {
 		orderPayload.PaymentId = sessionPayload.ID;
 		orderPayload.CheckOutOrder()
-	}
+	} 
 
 	//----> Send back the response.
-	context.JSON(http.StatusCreated, sessionPayload.ExpiresAt)
+	//context.JSON(http.StatusCreated, sessionPayload.ExpiresAt)
+	context.JSON(http.StatusCreated, sessionPayload.ID)
 }
 
