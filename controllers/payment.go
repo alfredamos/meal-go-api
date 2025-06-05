@@ -28,7 +28,7 @@ func CreatePaymentController(context *gin.Context){
 	payment := models.Payment{CancelUrl: cancelUrl, SuccessUrl: successUrl, StripeSecretKey: stripeSecretKey}
 
 	//----> Initialize orderPayload
-	orderPayload := models.PayloadOrder{}
+	orderPayload := models.OrderPayload{}
 	
 	//----> Get the request payload
 	err := context.ShouldBindJSON(&orderPayload)

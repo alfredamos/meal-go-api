@@ -12,7 +12,7 @@ import (
 
 func CheckOutOrder(context *gin.Context){
 	//----> Declare the type.
-	order := models.PayloadOrder{}
+	order := models.OrderPayload{}
 	
 	//----> Get the request payload
 	err := context.ShouldBindJSON(&order)

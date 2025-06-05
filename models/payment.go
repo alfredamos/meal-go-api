@@ -15,7 +15,7 @@ type Payment struct {
 	CancelUrl string
 }
 
-func (p Payment) CreatePayment(orderPayload PayloadOrder)(*stripe.CheckoutSession, error){
+func (p Payment) CreatePayment(orderPayload OrderPayload)(*stripe.CheckoutSession, error){
 	fmt.Println("payment : ", p)
 	stripe.Key = p.StripeSecretKey //----> Get the stripe key.
 	cartItems := orderPayload.CartItems//----> Cart line-items.

@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"errors"
 	"time"
-
 	"github.com/alfredamos/go-meal-api/initializers"
 	"gorm.io/gorm"
 )
@@ -198,29 +197,13 @@ func (order *Order) OrderShipped(id uint) (Order, error){
 	return orderEdited, nil
 }
 
-type Cart struct{
-	Name     string `json:"name"`
-	Price    float64 `json:"price"`
-	Quantity float64 `json:"quantity"`
-	Image    string `json:"image"`
-	PizzaId uint `json:"pizzaId"`
-	OrderId  uint `json:"orderId"`
-}
-
-type Carts []Cart
-
-type PayloadOrder struct {
+type OrderPayload struct {
 	UserId uint `json:"userId"`
 	PaymentId string `json:"paymentId"`
 	CartItems []CartItem 
 }
-type OrderPayload struct {
-	UserId uint `json:"userId"`
-	PaymentId string `json:"paymentId"`
-	Carts `json:"cartItems"`
-}
 
-func (order *PayloadOrder) CheckOutOrder() error{
+func (order *OrderPayload) CheckOutOrder() error{
 	//----> Get the carts slice.
 	carts := order.CartItems //----> Cart-items.
 	userId := order.UserId //----> User-id
