@@ -1,10 +1,8 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"os"
-
 	"github.com/alfredamos/go-meal-api/authenticate"
 	"github.com/alfredamos/go-meal-api/models"
 	"github.com/gin-gonic/gin"
@@ -31,8 +29,7 @@ func CreatePaymentController(context *gin.Context){
 
 	//----> Initialize orderPayload
 	orderPayload := models.PayloadOrder{}
-	reqBody := context.Request.Body
-	fmt.Printf("%+v ,request-body : ", reqBody)
+	
 	//----> Get the request payload
 	err := context.ShouldBindJSON(&orderPayload)
 
@@ -41,7 +38,7 @@ func CreatePaymentController(context *gin.Context){
 		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": err.Error()})
 		return
   }
-	fmt.Printf("%+v", orderPayload)
+	
 	//----> Make the payment by stripe.
 	sessionPayload, err := payment.CreatePayment(orderPayload)
 
@@ -58,7 +55,6 @@ func CreatePaymentController(context *gin.Context){
 	} 
 
 	//----> Send back the response.
-	//context.JSON(http.StatusCreated, sessionPayload.ExpiresAt)
 	context.JSON(http.StatusCreated, sessionPayload.ID)
 }
 

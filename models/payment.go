@@ -68,7 +68,7 @@ func getLineItems(cartItems []CartItem)[]*stripe.CheckoutSessionLineItemParams{
 } 
 
 func MakeSuccessAndCancelUrls(origin string) (string, string){
-	origin = "https://example.com"
+	//origin = "https://example.com"
 	successUrl := fmt.Sprintf("%v/orders/payment-success", origin)
 	cancelUrl := fmt.Sprintf("%v/orders/payment-failure", origin)
 
