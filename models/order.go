@@ -4,7 +4,9 @@ import (
 	"database/sql"
 	"errors"
 	"time"
+
 	"github.com/alfredamos/go-meal-api/initializers"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -17,7 +19,7 @@ const (
 )
 
 type Order struct {
-	ID        uint `gorm:"primaryKey" json:"id"`          
+	ID        string `gorm:"primaryKey" json:"id"`          
   CreatedAt time.Time
   UpdatedAt time.Time
   DeletedAt gorm.DeletedAt `gorm:"index"`
@@ -31,13 +33,19 @@ type Order struct {
 	IsPending bool `json:"isPending"`
 	IsDelivered bool `json:"isDelivered"`
 	Status Status `json:"status" binding:"required"`
-	UserID uint `gorm:"foreignKey:UserID" json:"userId" binding:"required"`
+	UserID string `gorm:"foreignKey:UserID" json:"userId" binding:"required"`
 	User User 
 	CartItems []CartItem `gorm:"foreignKey:OrderID;"`
 
 }
 
-func (order *Order) DeleteOrderById(id uint) error{
+// This functions are called before creating any Post
+func (t *Order) BeforeCreate(tx *gorm.DB) (err error) {
+	t.ID = uuid.New().String()
+	return
+}
+
+func (order *Order) DeleteOrderById(id string) error{
 	//----> Check to see if the order to be deleted is available in the database.
 	err := initializers.DB.Model(&Order{}).Preload("CartItems").First(&order, id).Error
 	
@@ -68,7 +76,7 @@ func (order *Order) DeleteOrderById(id uint) error{
 	return nil
 }
 
-func (*Order) DeleteOrderByUserId(userId uint) error{
+func (*Order) DeleteOrderByUserId(userId string) error{
 	orders := []Order{} //----> Orders variable.
 
 	//----> Retrieve orders from database.
@@ -127,7 +135,7 @@ func (*Order) GetAllOrders() ([]Order, error){
 	return orders, nil
 }
 
-func (*Order) GetAllOrdersByUserId(userId uint) ([]Order, error){
+func (*Order) GetAllOrdersByUserId(userId string) ([]Order, error){
 	orders := []Order{} //----> Orders variable.
 
 	//----> Retrieve orders from database.
@@ -198,7 +206,7 @@ func (order *Order) OrderShipped(id uint) (Order, error){
 }
 
 type OrderPayload struct {
-	UserId uint `json:"userId"`
+	UserId string `json:"userId"`
 	PaymentId string `json:"paymentId"`
 	CartItems []CartItem 
 }

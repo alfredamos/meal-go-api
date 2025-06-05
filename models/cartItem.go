@@ -3,12 +3,14 @@ package models
 import (
 	"errors"
 	"time"
+
 	"github.com/alfredamos/go-meal-api/initializers"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type CartItem struct {
-	ID        uint `gorm:"primaryKey" json:"id"`          
+	ID        string `gorm:"primaryKey" json:"id"`          
   CreatedAt time.Time
   UpdatedAt time.Time
   DeletedAt gorm.DeletedAt `gorm:"index"`
@@ -16,10 +18,16 @@ type CartItem struct {
 	Price    float64 `json:"price" binding:"required"`
 	Quantity float64 `json:"quantity" binding:"required"`
 	Image    string `json:"image" binding:"required"`
-	OrderID  uint `gorm:"foreignKey:OrderID" json:"orderId"`
+	OrderID  string `gorm:"foreignKey:OrderID" json:"orderId"`
 	Order Order 
-	PizzaID  uint `gorm:"foreignKey:PizzaID" json:"pizzaId" binding:"required"`
+	PizzaID  string `gorm:"foreignKey:PizzaID" json:"pizzaId" binding:"required"`
 	Pizza Pizza 
+}
+
+// This functions are called before creating any Post
+func (t *CartItem) BeforeCreate(tx *gorm.DB) (err error) {
+	t.ID = uuid.New().String()
+	return
 }
 
 func (cartItem *CartItem) CreateCartItem() error{
@@ -35,7 +43,7 @@ func (cartItem *CartItem) CreateCartItem() error{
 	return nil
 }
 
-func (*CartItem) DeleteCartItemById(id uint) error{
+func (*CartItem) DeleteCartItemById(id string) error{
 	//----> Retrieve the cart-item with the given id.
 	_, err := cartItemGetById(id)
 
@@ -56,7 +64,7 @@ func (*CartItem) DeleteCartItemById(id uint) error{
 	return nil
 }
 
-func (cartItem *CartItem) EditCartItemId(id uint) error{
+func (cartItem *CartItem) EditCartItemId(id string) error{
 	//----> Retrieve the cart-item with the given id.
 	_, err := cartItemGetById(id)
 
@@ -92,7 +100,7 @@ func (*CartItem) GetAllCartItems() ([]CartItem, error){
 	return cartItems, nil
 }
 
-func (*CartItem) GetCartItemById(id uint) (CartItem, error){
+func (*CartItem) GetCartItemById(id string) (CartItem, error){
 	//----> Retrieve the cart-item with the given id.
 	cartItem, err := cartItemGetById(id)
 

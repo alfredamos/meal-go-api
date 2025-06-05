@@ -3,8 +3,6 @@ package controllers
 import (
 	"fmt"
 	"net/http"
-	"strconv"
-
 	"github.com/alfredamos/go-meal-api/models"
 	"github.com/gin-gonic/gin"
 )
@@ -38,16 +36,16 @@ func DeleteCartItemById(context *gin.Context) {
 	cartItem := models.CartItem{} //----> Cart-item variable.
 	
 	//----> Get the id from param.
-	id, err := strconv.ParseUint(context.Param("id"), 10, 64)
+	id := context.Param("id")
 	
 	//----> Check for error.
-	if err != nil {
+	/* if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
-	} 
+	}  */
 
 	//----> Delete the cart-item from the database.
-	err = cartItem.DeleteCartItemById(uint(id))
+	err := cartItem.DeleteCartItemById(id)
 
 	//----> Check for error.
 	if err != nil {
@@ -63,16 +61,16 @@ func EditCartItemById(context *gin.Context) {
 	cartItem := models.CartItem{} //----> Cart-item variable.
 
 	//----> Get the id from param.
-	id, err := strconv.ParseUint(context.Param("id"), 10, 64)
+	id := context.Param("id")
 
 	//----> Check for error.
-	if err != nil {
+	/* if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
-	}
+	} */
 
 	//----> Get the request payload
-	err = context.ShouldBindJSON(&cartItem)
+	err := context.ShouldBindJSON(&cartItem)
 
 	//----> Check for error.
 	if err != nil {
@@ -81,7 +79,7 @@ func EditCartItemById(context *gin.Context) {
 	}
 
 	//----> Update cart-item in the database.
-	err = cartItem.EditCartItemId(uint(id))
+	err = cartItem.EditCartItemId(id)
 
 	//----> Check for error.
 	if err != nil {
@@ -113,16 +111,16 @@ func GetCartItemById(context *gin.Context) {
 	cartItem := models.CartItem{} //----> Cart-item variable.
 	
 	//----> Get the id from param.
-	id, err := strconv.ParseUint(context.Param("id"), 10, 64)
+	id := context.Param("id")
 
 	//----> Check for error.
-	if err != nil {
+	/* if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
-	} 
+	}  */
 
 	//----> Retrieve cart-item from database.
-	cartItem, err = cartItem.GetCartItemById(uint(id))
+	cartItem, err := cartItem.GetCartItemById(id)
 
 	//----> Check for error.
 	if err != nil {

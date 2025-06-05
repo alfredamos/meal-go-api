@@ -3,8 +3,6 @@ package controllers
 import (
 	"fmt"
 	"net/http"
-	"strconv"
-
 	"github.com/alfredamos/go-meal-api/models"
 	"github.com/gin-gonic/gin"
 )
@@ -41,16 +39,16 @@ func DeletePizzaById(context *gin.Context) {
  pizza := models.Pizza{}
 
  //----> Get the pizza-id from params.
- id, err := strconv.ParseUint(context.Param("id"), 10, 64)
+ id:= context.Param("id")
 
  //----> Check for error
- if err != nil {
+ /* if err != nil {
 	context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 	return
- }
+ } */
  
  //----> Delete pizza with this id from the database.
- err = pizza.DeletePizzaById(uint(id))
+ err := pizza.DeletePizzaById(id)
 
  //----> Check for error.
  if err != nil {
@@ -68,16 +66,16 @@ func EditPizzaById(context *gin.Context) {
  pizza := models.Pizza{}
 
  //----> Get the pizza-id from params.
- id, err := strconv.ParseUint(context.Param("id"), 10, 64)
+ id := context.Param("id")
 
  //----> Check for error.
- if err != nil {
+ /* if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
-	}
+	} */
  
  //----> Get the request payload
- err = context.ShouldBindJSON(&pizza)
+ err := context.ShouldBindJSON(&pizza)
 
  //----> Check for error.
  if err != nil {
@@ -86,7 +84,7 @@ func EditPizzaById(context *gin.Context) {
  }
 
  //----> Save the edited pizza into the database.
- err = pizza.EditPizzaId(uint(id))
+ err = pizza.EditPizzaId(id)
 
  if err != nil {
 	context.JSON(http.StatusNotFound, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
@@ -119,16 +117,16 @@ func GetPizzaById(context *gin.Context) {
 	pizza := models.Pizza{}
 	
 	//----> Get the pizza-id from params.
-	id, err := strconv.ParseUint(context.Param("id"), 10, 64)
+	id := context.Param("id")
 
  //----> Check for error
- if err != nil {
+ /* if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
- }
+ } */
  
  //----> Get pizza with this id from database.
- pizza, err = pizza.GetPizzaById(uint(id))
+ pizza, err := pizza.GetPizzaById(id)
 
  //----> Check for error.
  if err != nil {

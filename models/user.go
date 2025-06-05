@@ -5,11 +5,12 @@ import (
 	"time"
 
 	"github.com/alfredamos/go-meal-api/initializers"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type User struct {
-	ID        uint `gorm:"primaryKey" json:"id"`          
+	ID        string `gorm:"primaryKey" json:"id"`          
   CreatedAt time.Time
   UpdatedAt time.Time
   DeletedAt gorm.DeletedAt `gorm:"index"`
@@ -24,6 +25,12 @@ type User struct {
 	Orders []Order `gorm:"foreignKey:UserID"`
 	Pizzas []Pizza `gorm:"foreignKey:UserID"`
 
+}
+
+// This functions are called before creating any Post
+func (t *User) BeforeCreate(tx *gorm.DB) (err error) {
+	t.ID = uuid.New().String()
+	return
 }
 
 func (user *User) GetAllUsers() ([]User, error) {
@@ -42,7 +49,7 @@ func (user *User) GetAllUsers() ([]User, error) {
    return users, nil    
 }
 
-func (*User) GetUserById(id uint) (User, error) {
+func (*User) GetUserById(id string) (User, error) {
 	//----> Get user with the given id.
 	user, err := userGetById(id)
 
@@ -55,7 +62,7 @@ func (*User) GetUserById(id uint) (User, error) {
 	 return user, nil
 }
 
-func (*User) DeleteUserById(id uint) error{
+func (*User) DeleteUserById(id string) error{
 	//----> Get user with the given id.
 	_, err := userGetById(id)
 

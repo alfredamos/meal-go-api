@@ -25,7 +25,7 @@ func CalTotalPriceAndQuantity(carts []CartItem) (float64, float64) {
 	return totalQuantity, totalPrice
 }
 
-func makeOrder(userId uint, carts []CartItem, paymentId string) Order{
+func makeOrder(userId string, carts []CartItem, paymentId string) Order{
 	//----> Get the total quantity and total price.
 	totalQuantity, totalPrice := CalTotalPriceAndQuantity(carts)
 
@@ -58,7 +58,7 @@ func getPaymentId(paymentId string) string{
 	return result
 }
 
-func makeCartItems(carts []CartItem, orderId uint) []CartItem {
+func makeCartItems(carts []CartItem, orderId string) []CartItem {
 	newCarts := []CartItem{} //----> Cart variable.
 
 	//----> Make the cart-items by composing cart-item struct.

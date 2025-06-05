@@ -1,6 +1,8 @@
 package authenticate
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+)
 
 func GetRoleFromContext(c *gin.Context) (string, bool) {
 	//----> Get user role from context.
@@ -16,9 +18,9 @@ func GetRoleFromContext(c *gin.Context) (string, bool) {
 
 }
 
-func GetUserIdFromContext(c *gin.Context) uint{
+func GetUserIdFromContext(c *gin.Context) string{
 	//----> Get user-id from context.
-	userId := c.GetUint("userId")
+	userId := c.GetString("userId")
 
 	//----> Send back the user-id.
 	return userId

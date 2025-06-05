@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func OwnerAuthorize(userId uint, c *gin.Context) error {
+func OwnerAuthorize(userId string, c *gin.Context) error {
 		//----> Get user id from context.
 		userIdInt := GetUserIdFromContext(c)
 
@@ -26,7 +26,7 @@ func OwnerAuthorize(userId uint, c *gin.Context) error {
 }
 
 //----> Check for checking for same user.
-func isSameUser(userId1, userId2 uint) bool{
+func isSameUser(userId1, userId2 string) bool{
 	return userId1 == userId2
 }
 

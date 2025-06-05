@@ -1,14 +1,15 @@
 package models
 
+
 type UserAuthResp struct {
-	ID      uint   `json:"id"`
-	Name    string `json:"name"`
-	Email   string `json:"email"`
-	Phone   string `json:"phone"`
-	Image   string `json:"image"`
-	Gender  Gender `json:"gender"`
-	Role    Role   `json:"role"`
-	Address string `json:"address"`
+	ID      string `json:"id"`
+	Name    string  `json:"name"`
+	Email   string  `json:"email"`
+	Phone   string  `json:"phone"`
+	Image   string  `json:"image"`
+	Gender  Gender  `json:"gender"`
+	Role    Role    `json:"role"`
+	Address string  `json:"address"`
 }
 
 type LoginResp struct {

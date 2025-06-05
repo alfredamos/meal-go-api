@@ -5,12 +5,13 @@ import (
 	"time"
 
 	"github.com/alfredamos/go-meal-api/initializers"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 
 type Pizza struct {
-	ID        uint `gorm:"primaryKey" json:"id"`          
+	ID         string `gorm:"primaryKey" json:"id"`          
   CreatedAt time.Time
   UpdatedAt time.Time
   DeletedAt gorm.DeletedAt `gorm:"index"`
@@ -20,7 +21,13 @@ type Pizza struct {
 	Quantity    float64 `json:"quantity" binding:"required"`
 	Image       string `json:"image" binding:"required"`
 	Description string `json:"description" binding:"required"`
-	UserID      uint `gorm:"foreignKey:UserID;size:191" json:"userId" binding:"required"`
+	UserID      string `gorm:"foreignKey:UserID" json:"userId" binding:"required"`
+}
+
+// This functions are called before creating any Post
+func (t *Pizza) BeforeCreate(tx *gorm.DB) (err error) {
+	t.ID = uuid.New().String()
+	return
 }
 
 func (pizza *Pizza) CreatePizza() error{
@@ -36,7 +43,7 @@ func (pizza *Pizza) CreatePizza() error{
 	return nil
 }
 
-func (*Pizza) DeletePizzaById(id uint) error{
+func (*Pizza) DeletePizzaById(id string) error{
 	//----> Get the pizza with the given id
 	_, err := pizzaGetById(id)
 
@@ -58,7 +65,7 @@ func (*Pizza) DeletePizzaById(id uint) error{
 	return nil
 }
 
-func (pizza *Pizza) EditPizzaId(id uint) error{
+func (pizza *Pizza) EditPizzaId(id string) error{
 	//----> Get the pizza with the given id
 	_ , err := pizzaGetById(id)
 
@@ -94,7 +101,7 @@ func (*Pizza) GetAllPizzas() ([]Pizza, error){
    return pizzas, nil   
 }
 
-func (*Pizza) GetPizzaById(id uint) (Pizza, error){
+func (*Pizza) GetPizzaById(id string) (Pizza, error){
 	//----> Get the pizza with the given id
 	pizza, err := pizzaGetById(id)
 

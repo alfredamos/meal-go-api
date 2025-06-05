@@ -42,16 +42,16 @@ func DeleteOrderById(context *gin.Context){
 	order := models.Order{}
 
 	//----> Get order id from params.
-	id, err := strconv.ParseUint(context.Param("id"), 10, 64)
+	id := context.Param("id")
 	fmt.Println("In delete-order-by-id-controller, id : ", id)
 	//----> Check for error.
-	if err != nil {
+	/* if err != nil {
 		context.JSON(http.StatusOK, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
-	}
+	} */
 	
 	//----> Delete order with this id.
-	err = order.DeleteOrderById(uint(id))
+	err := order.DeleteOrderById(id)
 
 	//----> Check for error.
 	if err != nil {
@@ -68,16 +68,16 @@ func DeleteOrderByUserId(context *gin.Context){
 	order := models.Order{}
 
 	//----> Get the user-id from param.
-	userId, err := strconv.ParseUint(context.Param("userId"), 10, 64)
+	userId := context.Param("userId")
 
 	//----> Check for error.
-	if err != nil {
+	/* if err != nil {
 		context.JSON(http.StatusOK, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
-	}
+	} */
 
 	//----> Check for ownership permission or admin privilege.
-	err = authenticate.OwnerAuthorize(uint(userId), context)
+	err := authenticate.OwnerAuthorize(userId, context)
 
 	//----> Check for ownership.
 	if err != nil {
@@ -86,7 +86,7 @@ func DeleteOrderByUserId(context *gin.Context){
 	}
 
 	//----> Delete all orders attach to this userId.
-	err = order.DeleteOrderByUserId(uint(userId))
+	err = order.DeleteOrderByUserId(userId)
 
 	//----> Check for error
 	if err != nil {
@@ -137,16 +137,16 @@ func GetAllOrderByUserId(context *gin.Context){
 	order := models.Order{}
 
 	//----> Get the user-id from param.
-	userId, err := strconv.ParseUint(context.Param("userId"), 10, 64)
+	userId := context.Param("userId")
 
 	//----> Check for parsing error.
-	if err != nil {
+	/* if err != nil {
 		context.JSON(http.StatusForbidden, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
 		return
-	}
+	} */
 
 	//----> Check for ownership permission or admin privilege.
-	err = authenticate.OwnerAuthorize(uint(userId), context)
+	err := authenticate.OwnerAuthorize(userId, context)
 	
 	//----> Check for error.
 	if err != nil {
@@ -155,7 +155,7 @@ func GetAllOrderByUserId(context *gin.Context){
 	}
 
 	//----> Get all the orders by given user-id.
-	orders, err := order.GetAllOrdersByUserId(uint(userId))
+	orders, err := order.GetAllOrdersByUserId(userId)
 
 	//----> Check for error.
 	if err != nil {

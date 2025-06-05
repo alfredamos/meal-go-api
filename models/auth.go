@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"fmt"
+
 	"github.com/alfredamos/go-meal-api/authenticate"
 	"github.com/alfredamos/go-meal-api/initializers"
 	"golang.org/x/crypto/bcrypt"
@@ -117,7 +118,7 @@ func (changePasswordModel *ChangePasswordModel) ChangePassword() error {
 	return nil
 }
 
-func GetCurrentUser(userId uint) (User, error){
+func GetCurrentUser(userId string) (User, error){
 	//----> Get user with the given id.
 	user, err := userGetById(userId)
 	

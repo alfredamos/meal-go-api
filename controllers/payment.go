@@ -55,6 +55,6 @@ func CreatePaymentController(context *gin.Context){
 	} 
 
 	//----> Send back the response.
-	context.JSON(http.StatusCreated, sessionPayload.ID)
+	context.JSON(http.StatusCreated, sessionPayload)
 }
 

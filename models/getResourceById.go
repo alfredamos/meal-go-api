@@ -2,10 +2,11 @@ package models
 
 import (
 	"errors"
+
 	"github.com/alfredamos/go-meal-api/initializers"
 )
 
-func cartItemGetById(id uint) (CartItem, error) {
+func cartItemGetById(id string) (CartItem, error) {
 	cartItem := CartItem{} //----> Declaration.
 
 	//----> Retrieve the cart-item with given id from database.
@@ -20,7 +21,7 @@ func cartItemGetById(id uint) (CartItem, error) {
 	return cartItem, nil
 }
 
-func pizzaGetById(id uint) (Pizza, error) {
+func pizzaGetById(id string) (Pizza, error) {
 	pizza := Pizza{} //----> Pizza variable.
 
 	//----> Retrieve the pizza with the given id from the database.
@@ -35,7 +36,7 @@ func pizzaGetById(id uint) (Pizza, error) {
 	return pizza, nil
 }
 
-func userGetById(id uint) (User, error) {
+func userGetById(id string) (User, error) {
 	user := User{} //----> User variable.
 	
 	//----> Retrieve the user with the given id from the database.
