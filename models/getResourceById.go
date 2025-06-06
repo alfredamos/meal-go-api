@@ -10,7 +10,7 @@ func cartItemGetById(id string) (CartItem, error) {
 	cartItem := CartItem{} //----> Declaration.
 
 	//----> Retrieve the cart-item with given id from database.
-	err := initializers.DB.First(&cartItem, id).Error
+	err := initializers.DB.First(&cartItem, "id = ?", id).Error
 
 	//----> Check for error.
 	if err != nil {
@@ -25,7 +25,7 @@ func pizzaGetById(id string) (Pizza, error) {
 	pizza := Pizza{} //----> Pizza variable.
 
 	//----> Retrieve the pizza with the given id from the database.
-	err := initializers.DB.First(&pizza, id).Error
+	err := initializers.DB.First(&pizza, "id = ?", id).Error
 
 	//----> Check for non existent pizza.
 	if err != nil {
@@ -40,7 +40,7 @@ func userGetById(id string) (User, error) {
 	user := User{} //----> User variable.
 	
 	//----> Retrieve the user with the given id from the database.
-	err := initializers.DB.Omit("Password").First(&user, id).Error
+	err := initializers.DB.Omit("Password").First(&user, "id = ?", id).Error
 
 	//----> Check for non existent user.
 	if err != nil {

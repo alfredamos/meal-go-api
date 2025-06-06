@@ -10,7 +10,7 @@ import (
 
 
 type Pizza struct {
-	ID         string `gorm:"primaryKey" json:"id"`          
+	ID         string `gorm:"primaryKey;type:varchar(255)" json:"id"`          
   CreatedAt time.Time
   UpdatedAt time.Time
   DeletedAt gorm.DeletedAt `gorm:"index"`
@@ -20,7 +20,7 @@ type Pizza struct {
 	Quantity    float64 `json:"quantity" binding:"required"`
 	Image       string `json:"image" binding:"required"`
 	Description string `json:"description" binding:"required"`
-	UserID      string `gorm:"foreignKey:UserID" json:"userId" binding:"required"`
+	UserID      string `gorm:"foreignKey:UserID;type:varchar(255)" json:"userId" binding:"required"`
 }
 
 // This functions are called before creating any Post
@@ -52,7 +52,7 @@ func (*Pizza) DeletePizzaById(id string) error{
 	}
 
 	//----> Delete pizza from the database.
-	err = initializers.DB.Unscoped().Delete(&Pizza{}, id).Error
+	err = initializers.DB.Unscoped().Delete(&Pizza{}, "id = ?", id).Error
 
 	//----> Check for error.
 	if err != nil{

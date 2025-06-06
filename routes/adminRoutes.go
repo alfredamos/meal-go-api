@@ -9,8 +9,8 @@ func adminRoutes(p gin.IRoutes){
 	//----> Orders routes.
 	p.GET("/orders", controllers.GetAllOrders)
 	p.DELETE("/orders/delete-all-orders", controllers.DeleteAllOrders)
-	p.PATCH("/orders/:id/delivered", controllers.OrderDelivered)
-	p.PATCH("/orders/:id/shipped", controllers.OrderShipped)
+	p.PATCH("/orders/delivered/:id", controllers.OrderDelivered)
+	p.PATCH("/orders/shipped/:id", controllers.OrderShipped)
 
 	//----> Pizza routes.
 	p.POST("/pizzas", controllers.CreatePizza)

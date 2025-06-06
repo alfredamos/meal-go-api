@@ -10,7 +10,7 @@ import (
 )
 
 type CartItem struct {
-	ID        string `gorm:"primaryKey" json:"id"`          
+	ID        string `gorm:"primaryKey;type:varchar(255)" json:"id"`          
   CreatedAt time.Time
   UpdatedAt time.Time
   DeletedAt gorm.DeletedAt `gorm:"index"`
@@ -18,10 +18,10 @@ type CartItem struct {
 	Price    float64 `json:"price" binding:"required"`
 	Quantity float64 `json:"quantity" binding:"required"`
 	Image    string `json:"image" binding:"required"`
-	OrderID  string `gorm:"foreignKey:OrderID" json:"orderId"`
-	Order Order 
-	PizzaID  string `gorm:"foreignKey:PizzaID" json:"pizzaId" binding:"required"`
-	Pizza Pizza 
+	OrderID  string `gorm:"foreignKey:OrderID;type:varchar(255)" json:"orderId"`
+	Order Order `json:"order"`
+	PizzaID  string `gorm:"foreignKey:PizzaID;type:varchar(255)" json:"pizzaId" binding:"required"`
+	Pizza Pizza `json:"pizza"`
 }
 
 // This functions are called before creating any Post
@@ -53,7 +53,7 @@ func (*CartItem) DeleteCartItemById(id string) error{
 	}
 
 	//----> Delete the cart-item with the given id from database.
-	err = initializers.DB.Delete(&CartItem{}, id).Error
+	err = initializers.DB.Unscoped().Delete(&CartItem{}, "id = ?", id).Error
 	
 	//----> Check for error.
 	if err != nil {

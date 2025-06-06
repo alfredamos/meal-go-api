@@ -3,13 +3,14 @@ package models
 import (
 	"errors"
 	"time"
+
 	"github.com/alfredamos/go-meal-api/initializers"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type User struct {
-	ID        string `gorm:"primaryKey" json:"id"`          
+	ID        string `gorm:"primaryKey;type:varchar(255)" json:"id"`          
   CreatedAt time.Time
   UpdatedAt time.Time
   DeletedAt gorm.DeletedAt `gorm:"index"`
@@ -21,8 +22,8 @@ type User struct {
 	Password string `json:"password" binding:"required"`
 	Role     Role `json:"role"`
 	Address  string `json:"address" binding:"required"`
-	Orders []Order `gorm:"foreignKey:UserID"`
-	Pizzas []Pizza `gorm:"foreignKey:UserID"`
+	Orders []Order `gorm:"foreignKey:UserID" json:"orders"`
+	Pizzas []Pizza `gorm:"foreignKey:UserID" json:"pizzas"`
 
 }
 
@@ -71,7 +72,7 @@ func (*User) DeleteUserById(id string) error{
 	}
 
 	//----> Delete the user.
-	err = initializers.DB.Unscoped().Delete(&User{}, id).Error
+	err = initializers.DB.Unscoped().Delete(&User{}, "id = ?", id).Error
 
 	//----> Check for error.
 	if err != nil {

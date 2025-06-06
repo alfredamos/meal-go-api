@@ -57,13 +57,14 @@ func getUserClaims(c *gin.Context, parsedToken jToken) error{
 		name := claims["name"].(string)
 		email := claims["email"].(string)
 		role := claims["role"].(string)
-		userId := fmt.Sprintf("%v", claims["userId"].(float64))
+		userId := claims["userId"]
 
-		//----> Set the clBaims on gin context
+		//----> Set the claims on gin context
 		c.Set("name", name)
 		c.Set("email", email)
 		c.Set("role", role)
-		c.Set("userId", userId)
+		//----> Convert user-id to string 
+		c.Set("userId", fmt.Sprintf("%v", userId))
 		c.Next()
 		return nil
 	} 

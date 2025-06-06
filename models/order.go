@@ -19,7 +19,7 @@ const (
 )
 
 type Order struct {
-	ID        string `gorm:"primaryKey" json:"id"`          
+	ID        string `gorm:"primaryKey;type:varchar(255)" json:"id"`          
   CreatedAt time.Time
   UpdatedAt time.Time
   DeletedAt gorm.DeletedAt `gorm:"index"`
@@ -33,9 +33,9 @@ type Order struct {
 	IsPending bool `json:"isPending"`
 	IsDelivered bool `json:"isDelivered"`
 	Status Status `json:"status" binding:"required"`
-	UserID string `gorm:"foreignKey:UserID" json:"userId" binding:"required"`
-	User User 
-	CartItems []CartItem `gorm:"foreignKey:OrderID;"`
+	UserID string `gorm:"foreignKey:UserID;type:varchar(255)" json:"userId" binding:"required"`
+	User User `json:"user"`
+	CartItems []CartItem `gorm:"foreignKey:OrderID" json:"cartItems"`
 
 }
 
@@ -47,7 +47,7 @@ func (t *Order) BeforeCreate(tx *gorm.DB) (err error) {
 
 func (order *Order) DeleteOrderById(id string) error{
 	//----> Check to see if the order to be deleted is available in the database.
-	err := initializers.DB.Model(&Order{}).Preload("CartItems").First(&order, id).Error
+	err := initializers.DB.Model(&Order{}).Preload("CartItems").First(&order, "id = ?", id).Error
 	
 	//----> Check for error.
 	if err != nil {
@@ -66,7 +66,7 @@ func (order *Order) DeleteOrderById(id string) error{
 	} 
  
 	//----> Delete the order with given id.
-	err = initializers.DB.Unscoped().Delete(&Order{}, id).Error
+	err = initializers.DB.Unscoped().Delete(&Order{}, "id = ?", id).Error
 
 	//----> Check for error.
 	if err != nil {
@@ -152,7 +152,7 @@ func (*Order) GetAllOrdersByUserId(userId string) ([]Order, error){
 
 func (order *Order) GetOrderById(id string) (Order, error){
 	//----> retrieve the order with the given id from database.
-	err := initializers.DB.Model(&Order{}).Preload("User").Preload("CartItems").First(&order, id).Error
+	err := initializers.DB.Model(&Order{}).Preload("User").Preload("CartItems").First(&order, "id = ?", id).Error
 
 	//----> Check for error.
 	if err != nil {
@@ -165,7 +165,7 @@ func (order *Order) GetOrderById(id string) (Order, error){
 
 func (order *Order) OrderDelivered(id string) (Order, error){
 	//----> Retrieve the order.
-	err := initializers.DB.First(&order, id).Error
+	err := initializers.DB.First(&order, "id = ?", id).Error
 
 	//----> Check for error.
 	if err != nil {
@@ -186,7 +186,7 @@ func (order *Order) OrderDelivered(id string) (Order, error){
 
 func (order *Order) OrderShipped(id string) (Order, error){
 	//----> Retrieve the order.
-	err := initializers.DB.First(&order, id).Error
+	err := initializers.DB.First(&order, "id = ?", id).Error
 
 	//----> Check for error.
 	if err != nil {

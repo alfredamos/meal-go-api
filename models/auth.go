@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"fmt"
+
 	"github.com/alfredamos/go-meal-api/authenticate"
 	"github.com/alfredamos/go-meal-api/initializers"
 	"golang.org/x/crypto/bcrypt"
@@ -257,8 +258,8 @@ func populateUser(signup SignupModel, hashedPassword string) User{
 		Gender: signup.Gender,
 		Image: signup.Image,
 		Address: signup.Address,
-		Role: "Customer",
-		//Role: signup.Role,
+		//Role: "Customer",
+		Role: signup.Role,
 		Password: hashedPassword,
 	}
 
