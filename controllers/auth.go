@@ -3,7 +3,6 @@ package controllers
 import (
 	"fmt"
 	"net/http"
-
 	"github.com/alfredamos/go-meal-api/authenticate"
 	"github.com/alfredamos/go-meal-api/models"
 	"github.com/gin-gonic/gin"

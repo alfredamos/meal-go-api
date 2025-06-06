@@ -3,8 +3,6 @@ package controllers
 import (
 	"fmt"
 	"net/http"
-	"strconv"
-
 	"github.com/alfredamos/go-meal-api/authenticate"
 	"github.com/alfredamos/go-meal-api/models"
 	"github.com/gin-gonic/gin"
@@ -43,12 +41,6 @@ func DeleteOrderById(context *gin.Context){
 
 	//----> Get order id from params.
 	id := context.Param("id")
-	fmt.Println("In delete-order-by-id-controller, id : ", id)
-	//----> Check for error.
-	/* if err != nil {
-		context.JSON(http.StatusOK, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
-		return
-	} */
 	
 	//----> Delete order with this id.
 	err := order.DeleteOrderById(id)
@@ -69,12 +61,6 @@ func DeleteOrderByUserId(context *gin.Context){
 
 	//----> Get the user-id from param.
 	userId := context.Param("userId")
-
-	//----> Check for error.
-	/* if err != nil {
-		context.JSON(http.StatusOK, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
-		return
-	} */
 
 	//----> Check for ownership permission or admin privilege.
 	err := authenticate.OwnerAuthorize(userId, context)
@@ -139,12 +125,6 @@ func GetAllOrderByUserId(context *gin.Context){
 	//----> Get the user-id from param.
 	userId := context.Param("userId")
 
-	//----> Check for parsing error.
-	/* if err != nil {
-		context.JSON(http.StatusForbidden, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
-		return
-	} */
-
 	//----> Check for ownership permission or admin privilege.
 	err := authenticate.OwnerAuthorize(userId, context)
 	
@@ -181,16 +161,10 @@ func GetOrderById(context *gin.Context){
 	}
 
 	//----> The id from params.
-	id, err := strconv.ParseUint(context.Param("id"), 10, 64)
-
-	//----> Check for error.
-	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
-		return
-	}
+	id := context.Param("id")
 
 	//----> Get order by order-id.
-	order, err = order.GetOrderById(uint(id))
+	order, err = order.GetOrderById(id)
 
 	//----> Check for error.
 	if err != nil {
@@ -207,16 +181,10 @@ func OrderDelivered(context *gin.Context){
 	order := models.Order{}
 
 	//----> Get the order-id from param.
-	id, err := strconv.ParseUint(context.Param("id"), 10, 64)
-
-	//----> Check for error.
-	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
-		return
-	}
+	id := context.Param("id")
 
 	//----> Change the order status.
-	orderEdited, err := order.OrderDelivered(uint(id))
+	orderEdited, err := order.OrderDelivered(id)
 
 	//----> Check for error.
 	if err != nil {
@@ -234,16 +202,10 @@ func OrderShipped(context *gin.Context){
 	order := models.Order{}
 
  //----> Get the order-id from param.
- id, err := strconv.ParseUint(context.Param("id"), 10, 64)
-
- //----> Check for error.
- if err != nil {
-	context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
-	return
- }
+ id := context.Param("id")
 
  //----> Change the order status.
- orderEdited, err := order.OrderShipped(uint(id))
+ orderEdited, err := order.OrderShipped(id)
 
  //----> Check for error.
  if err != nil {

@@ -2,6 +2,7 @@ package authenticate
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -56,9 +57,9 @@ func getUserClaims(c *gin.Context, parsedToken jToken) error{
 		name := claims["name"].(string)
 		email := claims["email"].(string)
 		role := claims["role"].(string)
-		userId := uint(claims["userId"].(float64))
+		userId := fmt.Sprintf("%v", claims["userId"].(float64))
 
-		//----> Set the claims on gin context
+		//----> Set the clBaims on gin context
 		c.Set("name", name)
 		c.Set("email", email)
 		c.Set("role", role)

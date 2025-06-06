@@ -40,12 +40,6 @@ func DeletePizzaById(context *gin.Context) {
 
  //----> Get the pizza-id from params.
  id:= context.Param("id")
-
- //----> Check for error
- /* if err != nil {
-	context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
-	return
- } */
  
  //----> Delete pizza with this id from the database.
  err := pizza.DeletePizzaById(id)
@@ -67,12 +61,6 @@ func EditPizzaById(context *gin.Context) {
 
  //----> Get the pizza-id from params.
  id := context.Param("id")
-
- //----> Check for error.
- /* if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
-		return
-	} */
  
  //----> Get the request payload
  err := context.ShouldBindJSON(&pizza)
@@ -118,12 +106,6 @@ func GetPizzaById(context *gin.Context) {
 	
 	//----> Get the pizza-id from params.
 	id := context.Param("id")
-
- //----> Check for error
- /* if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
-		return
- } */
  
  //----> Get pizza with this id from database.
  pizza, err := pizza.GetPizzaById(id)

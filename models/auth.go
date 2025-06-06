@@ -3,7 +3,6 @@ package models
 import (
 	"errors"
 	"fmt"
-
 	"github.com/alfredamos/go-meal-api/authenticate"
 	"github.com/alfredamos/go-meal-api/initializers"
 	"golang.org/x/crypto/bcrypt"
@@ -80,7 +79,7 @@ func (changePasswordModel *ChangePasswordModel) ChangePassword() error {
 
 	//----> Check for existence of user by getting first marched record.
 	err := initializers.DB.Where("email = ?", email).First(&user).Error
-	fmt.Println("In change-password-model, error after save in db : ", err)
+	
 	//----> Record does not exist.
 	if err != nil{		
 		return errors.New("invalid credentials")

@@ -14,12 +14,6 @@ func DeleteUserById(context *gin.Context) {
 
 	//----> Get the user id from param
 	id:= context.Param("id")
-
- //----> Check for error
- /* if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
-		return
- } */
 	
 	//----> Retrieve the user with the given id from database.
 	err := user.DeleteUserById(id)
@@ -58,12 +52,6 @@ func GetUserById(context *gin.Context) {
 
 	//----> Get the user id from param.
 	id := context.Param("id")
-
- /* //----> Check for error
- if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
-		return
- } */
 	
 	//----> Check for ownership permission
 	err := authenticate.OwnerAuthorize(id, context)

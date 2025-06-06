@@ -6,7 +6,7 @@ type Cart struct{
 	Price    float64 `json:"price"`
 	Quantity float64 `json:"quantity"`
 	Image    string `json:"image"`
-	PizzaId  uint `json:"pizzaId"`
+	PizzaId  string `json:"pizzaId"`
 }
 
 type Carts []Cart

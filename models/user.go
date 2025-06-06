@@ -3,7 +3,6 @@ package models
 import (
 	"errors"
 	"time"
-
 	"github.com/alfredamos/go-meal-api/initializers"
 	"github.com/google/uuid"
 	"gorm.io/gorm"

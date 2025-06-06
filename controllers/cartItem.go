@@ -38,12 +38,6 @@ func DeleteCartItemById(context *gin.Context) {
 	//----> Get the id from param.
 	id := context.Param("id")
 	
-	//----> Check for error.
-	/* if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
-		return
-	}  */
-
 	//----> Delete the cart-item from the database.
 	err := cartItem.DeleteCartItemById(id)
 
@@ -62,12 +56,6 @@ func EditCartItemById(context *gin.Context) {
 
 	//----> Get the id from param.
 	id := context.Param("id")
-
-	//----> Check for error.
-	/* if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
-		return
-	} */
 
 	//----> Get the request payload
 	err := context.ShouldBindJSON(&cartItem)
@@ -112,12 +100,6 @@ func GetCartItemById(context *gin.Context) {
 	
 	//----> Get the id from param.
 	id := context.Param("id")
-
-	//----> Check for error.
-	/* if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
-		return
-	}  */
 
 	//----> Retrieve cart-item from database.
 	cartItem, err := cartItem.GetCartItemById(id)

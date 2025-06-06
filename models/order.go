@@ -150,7 +150,7 @@ func (*Order) GetAllOrdersByUserId(userId string) ([]Order, error){
 	return orders, nil
 }
 
-func (order *Order) GetOrderById(id uint) (Order, error){
+func (order *Order) GetOrderById(id string) (Order, error){
 	//----> retrieve the order with the given id from database.
 	err := initializers.DB.Model(&Order{}).Preload("User").Preload("CartItems").First(&order, id).Error
 
@@ -163,7 +163,7 @@ func (order *Order) GetOrderById(id uint) (Order, error){
 	return *order, nil
 }
 
-func (order *Order) OrderDelivered(id uint) (Order, error){
+func (order *Order) OrderDelivered(id string) (Order, error){
 	//----> Retrieve the order.
 	err := initializers.DB.First(&order, id).Error
 
@@ -184,7 +184,7 @@ func (order *Order) OrderDelivered(id uint) (Order, error){
 	return orderEdited, nil
 }
 
-func (order *Order) OrderShipped(id uint) (Order, error){
+func (order *Order) OrderShipped(id string) (Order, error){
 	//----> Retrieve the order.
 	err := initializers.DB.First(&order, id).Error
 
