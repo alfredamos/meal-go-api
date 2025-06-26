@@ -9,7 +9,7 @@ import (
 func RolePermission(roles ...string) gin.HandlerFunc{
 	return func(c *gin.Context){
 		//----> Get user role from context.
-		role, _ := GetRoleFromContext(c)
+		role, _, _ := GetUserAuthFromContext(c)
 
 		//----> Check for role in roles slice.
 		isValidRole := utils.Contains(roles, role)
@@ -17,7 +17,7 @@ func RolePermission(roles ...string) gin.HandlerFunc{
 		//----> Check for invalid role.
 		if  !isValidRole {
 			//----> Invalid role.
-			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"status": "fail","message": "You are not permitted to access this page or perform this function!", "statusCode": http.StatusForbidden})
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"status": "fail","message": "You are not permitted to access this page!", "statusCode": http.StatusForbidden})
 			return
 		}
 			

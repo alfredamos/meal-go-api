@@ -4,17 +4,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetRoleFromContext(c *gin.Context) (string, bool) {
+func GetUserAuthFromContext(c *gin.Context) (string, string, bool) {
 	//----> Get user role from context.
 	role := c.GetString("role")
 
+	//----> Get the user-id from context.
+	userId := c.GetString("userId")
 	
-		//----> Check for admin role.
-		isAdmin := role == "Admin"
-
+	//----> Check for admin role.
+	isAdmin := role == "Admin"
 
 	//----> Send back the role.
-	return role, isAdmin
+	return role, userId, isAdmin
 
 }
 
