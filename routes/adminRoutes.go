@@ -19,5 +19,5 @@ func adminRoutes(p gin.IRoutes){
 	
 	//----> User routes.
 	p.GET("/users", controllers.GetAllUsers)
-	p.DELETE("/users/:id", controllers.DeleteUserById)
+
 }

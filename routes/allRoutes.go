@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/alfredamos/go-meal-api/authenticate"
+	"github.com/alfredamos/go-meal-api/controllers"
 	"github.com/gin-gonic/gin"
 )
 
@@ -23,4 +24,12 @@ func RegisteredRoutes(server *gin.Engine){
 	
 	//----> Admin routes
 	adminRoutes(routesOfAdmin)
+
+	//----> Owner and admin routes.
+	adminAndOwnerRoutes := server.Group("/api").Use(authenticate.VerifyTokenJwt, controllers.OwnerAndAdmin)
+	ownerAndAdminRoutes(adminAndOwnerRoutes)
+
+	//----> Same user and admin routes.
+	userSameAndAdminRoutes := server.Group("/api").Use(authenticate.VerifyTokenJwt, authenticate.SameUserAndAdmin)
+	sameUserAndAdminRoutes(userSameAndAdminRoutes)
 }

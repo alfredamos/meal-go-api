@@ -3,7 +3,6 @@ package controllers
 import (
 	"fmt"
 	"net/http"
-	"github.com/alfredamos/go-meal-api/authenticate"
 	"github.com/alfredamos/go-meal-api/models"
 	"github.com/gin-gonic/gin"
 )
@@ -62,17 +61,8 @@ func DeleteOrderByUserId(context *gin.Context){
 	//----> Get the user-id from param.
 	userId := context.Param("userId")
 
-	//----> Check for ownership permission or admin privilege.
-	err := authenticate.OwnerAuthorize(userId, context)
-
-	//----> Check for ownership.
-	if err != nil {
-		context.JSON(http.StatusForbidden, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
-		return
-	}
-
 	//----> Delete all orders attach to this userId.
-	err = order.DeleteOrderByUserId(userId)
+	err := order.DeleteOrderByUserId(userId)
 
 	//----> Check for error
 	if err != nil {
@@ -125,15 +115,6 @@ func GetAllOrderByUserId(context *gin.Context){
 	//----> Get the user-id from param.
 	userId := context.Param("userId")
 
-	//----> Check for ownership permission or admin privilege.
-	err := authenticate.OwnerAuthorize(userId, context)
-	
-	//----> Check for error.
-	if err != nil {
-		context.JSON(http.StatusForbidden, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
-		return
-	}
-
 	//----> Get all the orders by given user-id.
 	orders, err := order.GetAllOrdersByUserId(userId)
 
@@ -151,20 +132,11 @@ func GetOrderById(context *gin.Context){
 	//----> declare the order variable.
 	order := models.Order{}
 
-	//----> Check for ownership permission or admin privilege.
-	err := authenticate.OwnerAuthorize(order.UserID, context)
-
-	//----> Check for ownership.
-	if err != nil {
-		context.JSON(http.StatusForbidden, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
-		return
-	}
-
 	//----> The id from params.
 	id := context.Param("id")
 
 	//----> Get order by order-id.
-	order, err = order.GetOrderById(id)
+	order, err := order.GetOrderById(id)
 
 	//----> Check for error.
 	if err != nil {

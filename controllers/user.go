@@ -3,7 +3,6 @@ package controllers
 import (
 	"fmt"
 	"net/http"
-	"github.com/alfredamos/go-meal-api/authenticate"
 	"github.com/alfredamos/go-meal-api/models"
 	"github.com/gin-gonic/gin"
 )
@@ -52,18 +51,9 @@ func GetUserById(context *gin.Context) {
 
 	//----> Get the user id from param.
 	id := context.Param("id")
-	
-	//----> Check for ownership permission
-	err := authenticate.OwnerAuthorize(id, context)
-
-	//----> Check for ownership.
-	if err != nil {
-		context.JSON(http.StatusForbidden, gin.H{"status": "failed!", "message": fmt.Sprintf("%v", err)})
-		return
-	}
 
 	//----> Get the user with the given id from database.
-	user, err = user.GetUserById(id)
+	user, err := user.GetUserById(id)
 
 	//----> Check if the user exist.
 	if err != nil{

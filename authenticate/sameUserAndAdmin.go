@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func sameUserAndAdmin(c *gin.Context){
+func SameUserAndAdmin(c *gin.Context){
 	//----> Get the user-id from param.
 	userIdFromContext := c.Param("id")
 	//----> Get user role from context.
