@@ -1,13 +1,16 @@
 package authenticate
 
 import (
+	"fmt"
 	"net/http"
+
 	"github.com/gin-gonic/gin"
 )
 
 func SameUserAndAdmin(c *gin.Context){
 	//----> Get the user-id from param.
-	userIdFromContext := c.Param("id")
+	userIdFromContext := c.Param("userId")
+	
 	//----> Get user role from context.
 	_, userId, isAdmin := GetUserAuthFromContext(c)
 
@@ -15,7 +18,7 @@ func SameUserAndAdmin(c *gin.Context){
 	isUserSame := IsSameUser(userId, userIdFromContext)
 
 	//----> Check for same user and admin privilege.
-	if !isUserSame && isAdmin {
+	if !isUserSame && !isAdmin {
 		//----> Invalid user.
 		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"status": "fail","message": "You are not permitted to access this page!", "statusCode": http.StatusForbidden})
 		return
