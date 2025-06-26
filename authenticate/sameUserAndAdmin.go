@@ -12,15 +12,19 @@ func sameUserAndAdmin(c *gin.Context){
 	_, userId, isAdmin := GetUserAuthFromContext(c)
 
 	//----> Check for same user.
-	isUserSame := isSameUser(userId, userIdFromContext)
+	isUserSame := IsSameUser(userId, userIdFromContext)
 
 	//----> Check for same user and admin privilege.
 	if !isUserSame && isAdmin {
-		//----> Invalid role.
+		//----> Invalid user.
 		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"status": "fail","message": "You are not permitted to access this page!", "statusCode": http.StatusForbidden})
 		return
 	}
 
 	//----> Same user and admin are allowed to gain access.
 	c.Next()
+}
+
+func IsSameUser(userId1, userId2 string)bool{
+	return userId1 == userId2
 }
